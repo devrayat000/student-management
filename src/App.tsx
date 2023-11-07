@@ -1,14 +1,17 @@
 import { HashRouter, Routes, Route, Link } from "react-router-dom";
 
 import StudentsPage from "./pages/students/page";
-import ClassesPage from "./pages/classes/page";
-import BatchesPage from "./pages/batches/page";
 import PaymentsPage from "./pages/payments/page";
 import RootLayout from "./pages/layout";
 import CreateStudentPage from "./pages/students/create/page";
+import ClassesPage from "./pages/classes/page";
 import CreateClassPage from "./pages/classes/create/page";
 import ClassDetailsPage from "./pages/classes/[classId]/page";
 import EditClassPage from "./pages/classes/[classId]/edit/page";
+import BatchesPage from "./pages/batches/page";
+import CreateBatchPage from "./pages/batches/create/page";
+import BatchDetailsPage from "./pages/batches/[classId]/page";
+import EditBatchPage from "./pages/batches/[classId]/edit/page";
 import { Toaster } from "./components/ui/toaster";
 
 function App() {
@@ -38,7 +41,14 @@ function App() {
                 <Route path="edit" element={<EditClassPage />} />
               </Route>
             </Route>
-            <Route path="batches" element={<BatchesPage />} />
+            <Route path="batches">
+              <Route index element={<BatchesPage />} />
+              <Route path="create" element={<CreateBatchPage />} />
+              <Route path=":batchId">
+                <Route index element={<BatchDetailsPage />} />
+                <Route path="edit" element={<EditBatchPage />} />
+              </Route>
+            </Route>
             <Route path="payments" element={<PaymentsPage />} />
           </Route>
         </Routes>
