@@ -1,17 +1,23 @@
 import { HashRouter, Routes, Route, Link } from "react-router-dom";
 
-import StudentsPage from "./pages/students/page";
-import PaymentsPage from "./pages/payments/page";
 import RootLayout from "./pages/layout";
+
+import StudentsPage from "./pages/students/page";
 import CreateStudentPage from "./pages/students/create/page";
+import StudentDetailsPage from "./pages/students/[studentId]/page";
+import EditStudentPage from "./pages/students/[studentId]/edit/page";
+
 import ClassesPage from "./pages/classes/page";
 import CreateClassPage from "./pages/classes/create/page";
 import ClassDetailsPage from "./pages/classes/[classId]/page";
 import EditClassPage from "./pages/classes/[classId]/edit/page";
+
 import BatchesPage from "./pages/batches/page";
 import CreateBatchPage from "./pages/batches/create/page";
 import BatchDetailsPage from "./pages/batches/[classId]/page";
 import EditBatchPage from "./pages/batches/[classId]/edit/page";
+
+import PaymentsPage from "./pages/payments/page";
 import { Toaster } from "./components/ui/toaster";
 
 function App() {
@@ -32,6 +38,10 @@ function App() {
             <Route path="students">
               <Route index element={<StudentsPage />} />
               <Route path="create" element={<CreateStudentPage />} />
+              <Route path=":studentId">
+                <Route index element={<StudentDetailsPage />} />
+                <Route path="edit" element={<EditStudentPage />} />
+              </Route>
             </Route>
             <Route path="classes">
               <Route index element={<ClassesPage />} />
