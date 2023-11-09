@@ -89,7 +89,8 @@ export default function CreatePayment() {
           <DialogHeader>
             <DialogTitle>Add Payment</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you're done.
+              Make changes this payment profile here. Click save when you're
+              done.
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
