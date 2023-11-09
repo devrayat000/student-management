@@ -1,15 +1,25 @@
-import { HashRouter, Routes, Route, Link } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
+
+import RootLayout from "./pages/layout";
 
 import StudentsPage from "./pages/students/page";
-import ClassesPage from "./pages/classes/page";
-import BatchesPage from "./pages/batches/page";
-import PaymentsPage from "./pages/payments/page";
-import RootLayout from "./pages/layout";
 import CreateStudentPage from "./pages/students/create/page";
+import StudentDetailsPage from "./pages/students/[studentId]/page";
+import EditStudentPage from "./pages/students/[studentId]/edit/page";
+
+import ClassesPage from "./pages/classes/page";
 import CreateClassPage from "./pages/classes/create/page";
 import ClassDetailsPage from "./pages/classes/[classId]/page";
 import EditClassPage from "./pages/classes/[classId]/edit/page";
+
+import BatchesPage from "./pages/batches/page";
+import CreateBatchPage from "./pages/batches/create/page";
+import BatchDetailsPage from "./pages/batches/[classId]/page";
+import EditBatchPage from "./pages/batches/[classId]/edit/page";
+
+import PaymentsPage from "./pages/payments/page";
 import { Toaster } from "./components/ui/toaster";
+import HomePage from "./pages/page";
 
 function App() {
   return (
@@ -17,18 +27,14 @@ function App() {
       <HashRouter future={{ v7_startTransition: true }}>
         <Routes>
           <Route path="/" element={<RootLayout />}>
-            <Route
-              index
-              element={
-                <div>
-                  <p>sweet</p>
-                  <Link to="students">Students</Link>
-                </div>
-              }
-            />
+            <Route index element={<HomePage />} />
             <Route path="students">
               <Route index element={<StudentsPage />} />
               <Route path="create" element={<CreateStudentPage />} />
+              <Route path=":studentId">
+                <Route index element={<StudentDetailsPage />} />
+                <Route path="edit" element={<EditStudentPage />} />
+              </Route>
             </Route>
             <Route path="classes">
               <Route index element={<ClassesPage />} />
@@ -38,7 +44,14 @@ function App() {
                 <Route path="edit" element={<EditClassPage />} />
               </Route>
             </Route>
-            <Route path="batches" element={<BatchesPage />} />
+            <Route path="batches">
+              <Route index element={<BatchesPage />} />
+              <Route path="create" element={<CreateBatchPage />} />
+              <Route path=":batchId">
+                <Route index element={<BatchDetailsPage />} />
+                <Route path="edit" element={<EditBatchPage />} />
+              </Route>
+            </Route>
             <Route path="payments" element={<PaymentsPage />} />
           </Route>
         </Routes>

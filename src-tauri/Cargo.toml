@@ -1,7 +1,7 @@
 [package]
 name = "student-management"
-version = "0.0.0"
-description = "A Tauri App"
+version = "1.0.0"
+description = "An app for managing payments for coaching centers."
 authors = ["you"]
 license = ""
 repository = ""

@@ -7,8 +7,8 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "student-management",
-    "version": "0.0.0"
+    "productName": "Student Management",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -37,7 +37,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "student-management",
+        "title": "Student Management",
         "width": 1024,
         "height": 720,
         "visible": false,

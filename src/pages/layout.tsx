@@ -24,7 +24,7 @@ export default function RootLayout() {
             }}
             width="30"
           />
-          <h1 className="text-lg font-medium">Acme</h1>
+          <h1 className="text-lg font-medium">Management</h1>
         </div>
         <nav className="space-y-2">
           <NavLink

@@ -1,1 +1,1 @@
-export { default } from "sql-bricks";
+export default String.raw;
