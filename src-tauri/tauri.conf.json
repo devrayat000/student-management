@@ -37,7 +37,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "student-management",
+        "title": "Student Management",
         "width": 1024,
         "height": 720,
         "visible": false,

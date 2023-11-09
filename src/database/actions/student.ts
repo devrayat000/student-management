@@ -86,4 +86,13 @@ async function deleteMany(ids: (string | number)[]) {
   return await db().execute(text, values);
 }
 
-export { del as delete, create, update, readOne, readAll, deleteMany };
+async function count() {
+  const { text, values } = bricks
+    .select(["COUNT(*) AS studentCount"])
+    .from("students")
+    .toParams();
+  const result = await db().select<{ studentCount: number }[]>(text, values);
+  return result[0];
+}
+
+export { del as delete, create, update, readOne, readAll, deleteMany, count };

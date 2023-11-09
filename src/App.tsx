@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, Link } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 import RootLayout from "./pages/layout";
 
@@ -19,6 +19,7 @@ import EditBatchPage from "./pages/batches/[classId]/edit/page";
 
 import PaymentsPage from "./pages/payments/page";
 import { Toaster } from "./components/ui/toaster";
+import HomePage from "./pages/page";
 
 function App() {
   return (
@@ -26,15 +27,7 @@ function App() {
       <HashRouter future={{ v7_startTransition: true }}>
         <Routes>
           <Route path="/" element={<RootLayout />}>
-            <Route
-              index
-              element={
-                <div>
-                  <p>sweet</p>
-                  <Link to="students">Students</Link>
-                </div>
-              }
-            />
+            <Route index element={<HomePage />} />
             <Route path="students">
               <Route index element={<StudentsPage />} />
               <Route path="create" element={<CreateStudentPage />} />
