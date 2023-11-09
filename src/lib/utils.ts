@@ -9,8 +9,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+const DATABASE = "sqlite:stdmngmt.db";
+
 export async function initialize() {
-  const db = await Database.load("sqlite:test.db");
+  const db = await Database.load(DATABASE);
 
   await db.execute(sql`
         ${classes}
@@ -23,11 +25,15 @@ export async function initialize() {
     `);
 }
 
-export async function destroy() {
-  await Database.get("sqlite:test.db").close();
+export async function load() {
+  await Database.load(DATABASE);
 }
 
-export const db = () => Database.get("sqlite:test.db");
+export async function destroy() {
+  await Database.get(DATABASE).close();
+}
+
+export const db = () => Database.get(DATABASE);
 
 export enum Month {
   January = "1",

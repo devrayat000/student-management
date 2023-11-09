@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "student-management",
+    "productName": "Student Management",
     "version": "1.0.0"
   },
   "tauri": {
