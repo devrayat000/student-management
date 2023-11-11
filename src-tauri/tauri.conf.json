@@ -4,11 +4,11 @@
     "beforeBuildCommand": "yarn build",
     "devPath": "http://localhost:1420",
     "distDir": "../dist",
-    "withGlobalTauri": false
+    "withGlobalTauri": true
   },
   "package": {
     "productName": "Student Management",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "tauri": {
     "allowlist": {
@@ -16,6 +16,11 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "window": {
+        "all": true,
+        "create": true,
+        "print": true
       }
     },
     "bundle": {
@@ -51,6 +56,14 @@
         "label": "splashscreen",
         "center": true
       }
-    ]
+    ],
+    "updater": {
+      "active": true,
+      "endpoints": [
+        "https://student-management-server-pi.vercel.app/{{target}}/{{arch}}/{{current_version}}"
+      ],
+      "dialog": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IERGNTg0QjJFMjkzM0FEMkUKUldRdXJUTXBMa3RZMzZiUnNWWkFWUmNlYy82M1pGMXJEY1JZV1V1bGJoNXRxeUt3UkZIWUhUWmoK"
+    }
   }
 }
