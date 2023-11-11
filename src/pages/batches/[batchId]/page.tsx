@@ -9,12 +9,18 @@ import DetailsPageLayout from "~/pages/DetailsPageLayout";
 import * as batch from "~/database/actions/batch";
 import Spinner from "~/components/common/Spinner";
 import DeletePrompt from "~/components/common/DeletePrompt";
+import BatchStudents from "./BatchStudents";
 
 export default function BatchDetailsPage() {
   return (
     <DetailsPageLayout title="Batch Details">
-      <Suspense fallback={<Spinner />}>
-        <BatchDetailsPageInner />
+      <Suspense>
+        <Suspense fallback={<Spinner />}>
+          <BatchDetailsPageInner />
+        </Suspense>
+        <Suspense fallback={<Spinner />}>
+          <BatchStudents />
+        </Suspense>
       </Suspense>
     </DetailsPageLayout>
   );

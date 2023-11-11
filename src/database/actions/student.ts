@@ -95,4 +95,37 @@ async function count() {
   return result[0];
 }
 
-export { del as delete, create, update, readOne, readAll, deleteMany, count };
+async function readByBatch(batchId?: number | string) {
+  if (!batchId) return [];
+  batchId = typeof batchId === "string" ? parseInt(batchId) : batchId;
+
+  const { text, values } = bricks
+    .select([
+      "students.id AS id",
+      "students.name AS name",
+      "students.phone AS phone",
+      `CASE
+        WHEN payments.id IS NOT NULL AND payments.amount IS NOT NULL THEN 'paid'
+        ELSE 'unpaid'
+      END AS paymentStatus`,
+    ])
+    .from("students")
+    .leftJoin("payments", { "payments.studentId": "students.id" })
+    .where("students.batchId", batchId)
+    .toParams();
+  const result = await db().select<IStudentWithClassAndBatch[]>(text, values);
+  console.log(result);
+
+  return result;
+}
+
+export {
+  readOne,
+  readAll,
+  readByBatch,
+  create,
+  update,
+  del as delete,
+  deleteMany,
+  count,
+};

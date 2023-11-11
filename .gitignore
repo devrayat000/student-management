@@ -31,3 +31,10 @@ dist-ssr
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Keys
+*.key
+*.key.*
+
+# production
+.env

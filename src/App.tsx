@@ -14,12 +14,13 @@ import EditClassPage from "./pages/classes/[classId]/edit/page";
 
 import BatchesPage from "./pages/batches/page";
 import CreateBatchPage from "./pages/batches/create/page";
-import BatchDetailsPage from "./pages/batches/[classId]/page";
-import EditBatchPage from "./pages/batches/[classId]/edit/page";
+import BatchDetailsPage from "./pages/batches/[batchId]/page";
+import EditBatchPage from "./pages/batches/[batchId]/edit/page";
 
 import PaymentsPage from "./pages/payments/page";
 import { Toaster } from "./components/ui/toaster";
 import HomePage from "./pages/page";
+import AttendencePage from "./pages/attendence/page";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
             </Route>
             <Route path="payments" element={<PaymentsPage />} />
           </Route>
+          <Route path="/attendence" element={<AttendencePage />} />
         </Routes>
       </HashRouter>
       <Toaster />
