@@ -8,8 +8,8 @@ jobs:
     steps:
       - name: Use variables
         run: |
-          echo "TAURI_PRIVATE_KEY variable : $TAURI_PRIVATE_KEY"
-          echo "TAURI_KEY_PASSWORD variable : $TAURI_KEY_PASSWORD"
+          echo "TAURI_PRIVATE_KEY variable : ${{ env.TAURI_PRIVATE_KEY }}"
+          echo "TAURI_KEY_PASSWORD variable : ${{ env.TAURI_KEY_PASSWORD }}"
         env:
           TAURI_PRIVATE_KEY: ${{ vars.TAURI_PRIVATE_KEY }}
           TAURI_KEY_PASSWORD: ${{ vars.TAURI_KEY_PASSWORD }}
