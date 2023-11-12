@@ -3,7 +3,19 @@ name: "publish"
 on: pull_request
 
 jobs:
+  display-variables:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Use variables
+        run: |
+          echo "TAURI_PRIVATE_KEY variable : $TAURI_PRIVATE_KEY"
+          echo "TAURI_KEY_PASSWORD variable : $TAURI_KEY_PASSWORD"
+        env:
+          TAURI_PRIVATE_KEY: ${{ vars.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ vars.TAURI_KEY_PASSWORD }}
+
   create-release:
+    needs: display-variables
     permissions:
       contents: write
     runs-on: ubuntu-20.04
