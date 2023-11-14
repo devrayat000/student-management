@@ -109,16 +109,31 @@ export const columns: ColumnDef<IStudentWithClassAndBatch>[] = [
       const status = row.original.paymentStatus;
 
       return (
-        <Badge
-          aria-disabled
+        <span
           className={cn(
+            "px-2 py-1 bg-red-200 text-red-800 rounded-md text-xs inline-flex items-center font-medium",
             status === "unpaid"
-              ? "bg-red-500 hover:bg-red-500"
-              : "bg-green-500 hover:bg-green-500"
+              ? "bg-red-200 text-red-800"
+              : "bg-green-200 text-green-800"
           )}
         >
+          <svg
+            className="w-3 h-3 inline-block mr-1"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
+            <path d="M7 7h.01" />
+          </svg>
           {status.toUpperCase()}
-        </Badge>
+        </span>
       );
     },
   },
@@ -144,7 +159,7 @@ export const columns: ColumnDef<IStudentWithClassAndBatch>[] = [
             size="icon"
             variant="outline"
             asChild
-            className="h-8 w-10 border-red-200 hover:bg-red-300/10"
+            className="h-8 w-10 border-red-200 hover:bg-red-300/20"
           >
             <DeletePrompt
               element="student"

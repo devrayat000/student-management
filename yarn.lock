@@ -2557,6 +2557,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-to-csv-export@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "json-to-csv-export@npm:2.1.1"
+  checksum: a0baaf43a36e61648733feb42947f96ec062ee5a3e6c16350aba9974a946bd5163a19479e324868a4f82fffca63e08259dc4b2397232daf385612b5d66d3060f
+  languageName: node
+  linkType: hard
+
 "json5@npm:^2.2.3":
   version: 2.2.3
   resolution: "json5@npm:2.2.3"
@@ -3470,6 +3477,7 @@ __metadata:
     class-variance-authority: "npm:^0.7.0"
     clsx: "npm:^2.0.0"
     dayjs: "npm:^1.11.10"
+    json-to-csv-export: "npm:^2.1.1"
     lucide-react: "npm:^0.291.0"
     pluralize: "npm:^8.0.0"
     postcss: "npm:^8.4.31"

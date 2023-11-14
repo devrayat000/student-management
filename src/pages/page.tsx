@@ -25,14 +25,16 @@ function HomePageInner() {
 
   return (
     <div>
-      <div className="p-4 grid grid-cols-2 gap-3">
-        <div className="rounded-md border border-slate-400 p-4">
+      <h2 className="text-xl mb-2 font-medium">Welcome back, Boss 🫡!</h2>
+      <p>Here is the overview of your account:</p>
+      <div className="p-4 grid grid-cols-2 gap-3 mt-3">
+        <div className="rounded-md border p-4">
           <h4 className="text-center font-medium text-xl">Total Students</h4>
           <p className="text-center text-4xl font-bold mt-1">
             {data.studentCount}
           </p>
         </div>
-        <div className="rounded-md border border-slate-400 p-4">
+        <div className="rounded-md border p-4">
           <h4 className="text-center font-medium text-xl">Total Batches</h4>
           <p className="text-center text-4xl font-bold mt-1">
             {data.batchCount}

@@ -27,6 +27,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "dayjs": "^1.11.10",
+    "json-to-csv-export": "^2.1.1",
     "lucide-react": "^0.291.0",
     "pluralize": "^8.0.0",
     "react": "^18.2.0",
