@@ -1,30 +1,44 @@
 import { Suspense } from "react";
 import useSWR from "swr";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import DetailsPageLayout from "~/pages/DetailsPageLayout";
-import * as clazz from "~/database/actions/class";
 import Spinner from "~/components/common/Spinner";
 import DeletePrompt from "~/components/common/DeletePrompt";
+import { contentKeys, contents } from "../utils";
+import { singular } from "pluralize";
+import capitalize from "capitalize";
 
-export default function ClassDetailsPage() {
+export default function ContentDetailsPage() {
+  const { content } = useParams();
+
+  if (!content || !contentKeys.includes(content)) {
+    return <Navigate to="/" />;
+  }
+
   return (
-    <DetailsPageLayout title="Class Details">
+    <DetailsPageLayout title={`${capitalize(singular(content))} Details`}>
       <Suspense fallback={<Spinner />}>
-        <ClassDetailsPageInner />
+        <ContentDetailsPageInner />
       </Suspense>
     </DetailsPageLayout>
   );
 }
 
-function ClassDetailsPageInner() {
-  const { classId } = useParams();
-  const { data } = useSWR(["classes", classId], ([, id]) => clazz.readOne(id), {
-    suspense: true,
-  });
+function ContentDetailsPageInner() {
+  const { contentId, content } = useParams();
+  const { data } = useSWR(
+    [content, contentId],
+    ([, id]) => contents[content! as keyof typeof contents].readOne(id),
+    {
+      suspense: true,
+    }
+  );
+
+  const title = capitalize(singular(content!));
 
   return (
     <div className="flex flex-col gap-3">
@@ -32,7 +46,7 @@ function ClassDetailsPageInner() {
         <Input disabled defaultValue={data?.id} className="w-52" />
       </div>
       <div>
-        <Label>Class Name</Label>
+        <Label>{title} Name</Label>
         <Input disabled defaultValue={data?.name} />
       </div>
       <div className="flex items-center gap-3">
@@ -41,9 +55,9 @@ function ClassDetailsPageInner() {
         </Button>
         <Button className="w-full mt-1 bg-red-500 hover:bg-red-500/90" asChild>
           <DeletePrompt
-            element="class"
-            itemId={classId}
-            onDelete={clazz.delete}
+            element={singular(content!)}
+            itemId={contentId}
+            onDelete={contents[content! as keyof typeof contents].delete}
           >
             Delete
           </DeletePrompt>

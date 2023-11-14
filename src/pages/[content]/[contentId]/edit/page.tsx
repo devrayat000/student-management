@@ -1,9 +1,11 @@
 import { Suspense } from "react";
 import useSWR, { mutate } from "swr";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { singular } from "pluralize";
+import capitalize from "capitalize";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -16,44 +18,57 @@ import {
   FormLabel,
 } from "~/components/ui/form";
 import { useToast } from "~/components/ui/use-toast";
-import * as batch from "~/database/actions/batch";
 import Spinner from "~/components/common/Spinner";
+import { contentKeys, contents } from "../../utils";
 
-const updateBatchSchema = z.object({
+const updateContentSchema = z.object({
   name: z.string().min(1, "Name is required"),
 });
 
-export default function EditBatchPage() {
+export default function EditContentPage() {
+  const { content } = useParams();
+
+  if (!content || !contentKeys.includes(content)) {
+    return <Navigate to="/" />;
+  }
+
   return (
-    <DetailsPageLayout title="Edit Batch">
+    <DetailsPageLayout title={`Edit ${capitalize(singular(content))}`}>
       <Suspense fallback={<Spinner />}>
-        <EditBatchPageInner />
+        <EditContentPageInner />
       </Suspense>
     </DetailsPageLayout>
   );
 }
 
-function EditBatchPageInner() {
-  const { batchId } = useParams();
-  const { data } = useSWR(["batches", batchId], ([, id]) => batch.readOne(id), {
-    suspense: true,
-  });
-  const form = useForm<z.infer<typeof updateBatchSchema>>({
+function EditContentPageInner() {
+  const { content } = useParams();
+  const contentApi = contents[content! as keyof typeof contents];
+
+  const { contentId } = useParams();
+  const { data } = useSWR(
+    [content, contentId],
+    ([, id]) => contentApi.readOne(id),
+    {
+      suspense: true,
+    }
+  );
+  const form = useForm<z.infer<typeof updateContentSchema>>({
     defaultValues: {
       name: data?.name,
     },
-    resolver: zodResolver(updateBatchSchema),
+    resolver: zodResolver(updateContentSchema),
   });
   const { toast } = useToast();
 
-  async function updateBatch(data: z.infer<typeof updateBatchSchema>) {
-    if (!batchId) return;
+  async function updateContent(data: z.infer<typeof updateContentSchema>) {
+    if (!contentId) return;
 
-    await batch.update({ ...data, id: parseInt(batchId!) });
-    await mutate(["batches", batchId], { ...data, id: parseInt(batchId!) });
-    await mutate(["batches"]);
+    await contentApi.update({ ...data, id: parseInt(contentId!) });
+    await mutate([content, contentId], { ...data, id: parseInt(contentId!) });
+    await mutate([content]);
     toast({
-      title: `Updated Batch (ID: ${batchId})`,
+      title: `Updated Content (ID: ${contentId})`,
     });
   }
 
@@ -61,7 +76,7 @@ function EditBatchPageInner() {
     <Form {...form}>
       <form
         className="flex flex-col gap-3"
-        onSubmit={form.handleSubmit(updateBatch)}
+        onSubmit={form.handleSubmit(updateContent)}
       >
         <div className="flex justify-end">
           <Input disabled name="id" defaultValue={data?.id} className="w-52" />
@@ -71,7 +86,7 @@ function EditBatchPageInner() {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Batch Name</FormLabel>
+              <FormLabel>Content Name</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>

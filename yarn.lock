@@ -1570,6 +1570,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/capitalize@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@types/capitalize@npm:2.0.2"
+  checksum: 5bbe28e576f1c0d4e88d84c3eb2a3f234d2adc92bcfdd17549ab1a5a116b56e16970522e9b1df761fbab6488150225378bc1a2d3ea2aaf6c43088d207b730fc8
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*":
   version: 20.9.0
   resolution: "@types/node@npm:20.9.0"
@@ -1856,6 +1863,13 @@ __metadata:
   version: 1.0.30001559
   resolution: "caniuse-lite@npm:1.0.30001559"
   checksum: 32377e386580dcb977f552b488e7b56fb489aa0a83f4f43087af6e8fe1fe7fda529bc29e76ef38c0f9c56c964389d322059a0dd7a544859a7b88063f7fc761d7
+  languageName: node
+  linkType: hard
+
+"capitalize@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "capitalize@npm:2.0.4"
+  checksum: 014b5aaaebef5c9af598361df99a8ccd9267c273d5f4e5412ebacf902c4ba40638b77a705f82d460ea371935d2d3c81ac09db2bb81b1f55ba89ed0ea54d15656
   languageName: node
   linkType: hard
 
@@ -2641,15 +2655,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-react@npm:^0.291.0":
-  version: 0.291.0
-  resolution: "lucide-react@npm:0.291.0"
-  peerDependencies:
-    react: ^16.5.1 || ^17.0.0 || ^18.0.0
-  checksum: 4a26b884b7da87887faed79275d9e6038bc352c2082fa493dffa1e138c74fc1120742370bd4a3ea0811d258708a993c76dbea79a7af07c1ffd5d785f4688fe14
-  languageName: node
-  linkType: hard
-
 "make-fetch-happen@npm:^13.0.0":
   version: 13.0.0
   resolution: "make-fetch-happen@npm:13.0.0"
@@ -3408,17 +3413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sql-bricks-sqlite@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "sql-bricks-sqlite@npm:1.0.0"
-  dependencies:
-    sql-bricks: "npm:^3.0.0"
-    underscore: "npm:^1.12.1"
-  checksum: fcdb6bdd1d916dd2d683eb38a7e7bb423be8353c991837255ba33aa48f104cf11df2fb502fffc3f195267bc96bcbbab98815ff9d6c9c57a41bdcd5ad2b9daf16
-  languageName: node
-  linkType: hard
-
-"sql-bricks@npm:^3.0.0, sql-bricks@npm:^3.0.1":
+"sql-bricks@npm:^3.0.1":
   version: 3.0.1
   resolution: "sql-bricks@npm:3.0.1"
   checksum: 62c8577ade0c9905721b7850a99afddbcff6c8947ff5a3a3c521742c2ea17ed08ca094045476984ce08f608d26bd759c09f42efbcf0e05f673f8860cbc5b73a8
@@ -3493,6 +3488,7 @@ __metadata:
     "@tanstack/react-table": "npm:^8.10.7"
     "@tauri-apps/api": "npm:^1.5.0"
     "@tauri-apps/cli": "npm:^1.5.0"
+    "@types/capitalize": "npm:^2.0.2"
     "@types/node": "npm:^20.8.10"
     "@types/papaparse": "npm:^5.3.11"
     "@types/pluralize": "npm:^0.0.32"
@@ -3500,11 +3496,11 @@ __metadata:
     "@types/react-dom": "npm:^18.2.7"
     "@vitejs/plugin-react": "npm:^4.0.3"
     autoprefixer: "npm:^10.4.16"
+    capitalize: "npm:^2.0.4"
     class-variance-authority: "npm:^0.7.0"
     clsx: "npm:^2.0.0"
     dayjs: "npm:^1.11.10"
     json-to-csv-export: "npm:^2.1.1"
-    lucide-react: "npm:^0.291.0"
     papaparse: "npm:^5.4.1"
     pluralize: "npm:^8.0.0"
     postcss: "npm:^8.4.31"
@@ -3515,7 +3511,6 @@ __metadata:
     react-icons: "npm:^4.11.0"
     react-router-dom: "npm:^6.18.0"
     sql-bricks: "npm:^3.0.1"
-    sql-bricks-sqlite: "npm:^1.0.0"
     swr: "npm:^2.2.4"
     tailwind-merge: "npm:^2.0.0"
     tailwindcss: "npm:^3.3.5"
@@ -3722,13 +3717,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 062c1cee1990e6b9419ce8a55162b8dc917eb87f807e4de0327dbc1c2fa4e5f61bc0dd4e034d38ff541d1ed0479b53bcee8e4de3a4075c51a1724eb6216cb6f5
-  languageName: node
-  linkType: hard
-
-"underscore@npm:^1.12.1":
-  version: 1.13.6
-  resolution: "underscore@npm:1.13.6"
-  checksum: 5f57047f47273044c045fddeb8b141dafa703aa487afd84b319c2495de2e685cecd0b74abec098292320d518b267c0c4598e45aa47d4c3628d0d4020966ba521
   languageName: node
   linkType: hard
 

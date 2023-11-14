@@ -1,5 +1,8 @@
 import { HashRouter, Routes, Route } from "react-router-dom";
 
+import { Toaster } from "./components/ui/toaster";
+
+import HomePage from "./pages/page";
 import RootLayout from "./pages/layout";
 
 import StudentsPage from "./pages/students/page";
@@ -7,19 +10,10 @@ import CreateStudentPage from "./pages/students/create/page";
 import StudentDetailsPage from "./pages/students/[studentId]/page";
 import EditStudentPage from "./pages/students/[studentId]/edit/page";
 
-import ClassesPage from "./pages/classes/page";
-import CreateClassPage from "./pages/classes/create/page";
-import ClassDetailsPage from "./pages/classes/[classId]/page";
-import EditClassPage from "./pages/classes/[classId]/edit/page";
-
-import BatchesPage from "./pages/batches/page";
-import CreateBatchPage from "./pages/batches/create/page";
-import BatchDetailsPage from "./pages/batches/[batchId]/page";
-import EditBatchPage from "./pages/batches/[batchId]/edit/page";
-
-import PaymentsPage from "./pages/payments/page";
-import { Toaster } from "./components/ui/toaster";
-import HomePage from "./pages/page";
+import ContentsPage from "./pages/[content]/page";
+import CreateContentPage from "./pages/[content]/create/page";
+import ContentDetailsPage from "./pages/[content]/[contentId]/page";
+import EditContentPage from "./pages/[content]/[contentId]/edit/page";
 import AttendencePage from "./pages/attendence/page";
 
 function App() {
@@ -37,25 +31,17 @@ function App() {
                 <Route path="edit" element={<EditStudentPage />} />
               </Route>
             </Route>
-            <Route path="classes">
-              <Route index element={<ClassesPage />} />
-              <Route path="create" element={<CreateClassPage />} />
-              <Route path=":classId">
-                <Route index element={<ClassDetailsPage />} />
-                <Route path="edit" element={<EditClassPage />} />
+            <Route path=":content">
+              <Route index element={<ContentsPage />} />
+              <Route path="create" element={<CreateContentPage />} />
+              <Route path=":contentId">
+                <Route index element={<ContentDetailsPage />} />
+                <Route path="edit" element={<EditContentPage />} />
               </Route>
             </Route>
-            <Route path="batches">
-              <Route index element={<BatchesPage />} />
-              <Route path="create" element={<CreateBatchPage />} />
-              <Route path=":batchId">
-                <Route index element={<BatchDetailsPage />} />
-                <Route path="edit" element={<EditBatchPage />} />
-              </Route>
-            </Route>
-            <Route path="payments" element={<PaymentsPage />} />
           </Route>
           <Route path="/attendence" element={<AttendencePage />} />
+          {/* <Route path="*" element={<h1>Not Found</h1>} /> */}
         </Routes>
       </HashRouter>
       <Toaster />

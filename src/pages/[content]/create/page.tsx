@@ -2,7 +2,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { mutate } from "swr";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+// import useMutation from "swr/mutation";
 
 import {
   Form,
@@ -15,38 +16,50 @@ import {
 import { Input } from "~/components/ui/input";
 import DetailsPageLayout from "~/pages/DetailsPageLayout";
 import { Button } from "~/components/ui/button";
-import * as batch from "~/database/actions/batch";
+import { contentKeys, contents } from "../utils";
+import capitalize from "capitalize";
+import { singular } from "pluralize";
 
-const createBatchSchema = z.object({
+const createContentSchema = z.object({
   name: z.string().min(1, "Name is required"),
 });
 
-export default function CreateBatchPage() {
+export default function CreateClassPage() {
   const navigate = useNavigate();
-  const form = useForm<z.infer<typeof createBatchSchema>>({
-    resolver: zodResolver(createBatchSchema),
+  const form = useForm<z.infer<typeof createContentSchema>>({
+    resolver: zodResolver(createContentSchema),
   });
 
-  async function createBatch(data: z.infer<typeof createBatchSchema>) {
+  const { content } = useParams();
+
+  if (!content || !contentKeys.includes(content)) {
+    return <Navigate to="/" />;
+  }
+
+  async function createClass(data: z.infer<typeof createContentSchema>) {
     console.log(data);
-    const result = await batch.create(data);
+    const result = await contents[content! as keyof typeof contents].create(
+      data
+    );
     console.log(result);
-    await mutate(["batches"]);
+    await mutate([content]);
     navigate(`../${result.lastInsertId}`, { replace: true });
   }
 
+  const title = capitalize(singular(content));
+
   return (
-    <DetailsPageLayout title="Create batch">
+    <DetailsPageLayout title={`Create ${title}`}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(createBatch)}>
+        <form onSubmit={form.handleSubmit(createClass)}>
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>batch Name</FormLabel>
+                <FormLabel>{title} Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="batch 1" {...field} />
+                  <Input placeholder={`${title} 1`} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

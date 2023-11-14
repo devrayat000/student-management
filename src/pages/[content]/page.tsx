@@ -1,5 +1,5 @@
 import { Suspense, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import useSWR from "swr";
 import {
   ColumnDef,
@@ -17,7 +17,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { AiOutlineEdit } from "react-icons/ai";
 
 import ListLayout from "../ListLayout";
-import { IBatch } from "~/database/schema";
+import { IClass } from "~/database/schema";
 import {
   Table,
   TableBody,
@@ -29,11 +29,13 @@ import {
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
-import * as batch from "~/database/actions/batch";
 import DeletePrompt from "~/components/common/DeletePrompt";
 import Spinner from "~/components/common/Spinner";
+import capitalize from "capitalize";
+import { contentKeys, contents } from "./utils";
+import { singular } from "pluralize";
 
-export const columns: ColumnDef<IBatch>[] = [
+export const columns: ColumnDef<IClass>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -65,7 +67,7 @@ export const columns: ColumnDef<IBatch>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Batch Name
+          Class Name
           <LuArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -76,6 +78,7 @@ export const columns: ColumnDef<IBatch>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const clz = row.original;
+      const { content } = useParams();
 
       return (
         <div className="flex gap-1 items-center">
@@ -96,9 +99,9 @@ export const columns: ColumnDef<IBatch>[] = [
             className="h-8 w-10 border-red-200 hover:bg-red-300/10"
           >
             <DeletePrompt
-              element="batch"
+              element={singular(content!)}
               itemId={clz.id}
-              onDelete={batch.delete}
+              onDelete={contents[content! as keyof typeof contents].delete}
             >
               <RiDeleteBin6Line className="w-3.5 h-3.5 text-red-500" />
             </DeletePrompt>
@@ -109,23 +112,34 @@ export const columns: ColumnDef<IBatch>[] = [
   },
 ];
 
-export default function BatchesPage() {
+export default function ContentsPage() {
+  const { content } = useParams();
+
+  if (!content || !contentKeys.includes(content)) {
+    return <Navigate to="/" />;
+  }
+
   return (
-    <ListLayout title="Batches">
+    <ListLayout title={capitalize(content)}>
       <Suspense fallback={<Spinner />}>
-        <BatchesPageInner />
+        <ContentsPageInner />
       </Suspense>
     </ListLayout>
   );
 }
 
-function BatchesPageInner() {
+function ContentsPageInner() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
-  const { data } = useSWR(["batches"], batch.readAll, {
-    suspense: true,
-  });
+  const { content } = useParams();
+  const { data } = useSWR(
+    [content],
+    contents[content! as keyof typeof contents].readAll,
+    {
+      suspense: true,
+    }
+  );
   const table = useReactTable({
     data,
     columns,
@@ -147,7 +161,7 @@ function BatchesPageInner() {
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter batches..."
+          placeholder={`Filter ${content}...`}
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
