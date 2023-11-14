@@ -1,7 +1,7 @@
 {
   "name": "student-management",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -29,6 +29,7 @@
     "dayjs": "^1.11.10",
     "json-to-csv-export": "^2.1.1",
     "lucide-react": "^0.291.0",
+    "papaparse": "^5.4.1",
     "pluralize": "^8.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -42,11 +43,13 @@
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
     "tauri-plugin-sql": "https://github.com/tauri-apps/tauri-plugin-sql#v1",
+    "tauri-plugin-store": "https://github.com/tauri-apps/tauri-plugin-store#v1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.0",
     "@types/node": "^20.8.10",
+    "@types/papaparse": "^5.3.11",
     "@types/pluralize": "^0.0.32",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",

@@ -20,6 +20,12 @@ async function getPaymentHistoryByStudentId(id?: number | string) {
   return result;
 }
 
+async function readRaw() {
+  const { text, values } = bricks.select().from("payments").toParams();
+  const result = await db().select<IPaymentHistory[]>(text, values);
+  return result;
+}
+
 async function readOne(paymentId: string | number) {
   paymentId = typeof paymentId === "string" ? parseInt(paymentId) : paymentId;
 
@@ -84,4 +90,11 @@ async function del(paymentId: string | number) {
   return result;
 }
 
-export { getPaymentHistoryByStudentId, create, del as delete, update, readOne };
+export {
+  getPaymentHistoryByStudentId,
+  create,
+  del as delete,
+  update,
+  readOne,
+  readRaw,
+};

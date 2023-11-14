@@ -1570,12 +1570,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:*":
+  version: 20.9.0
+  resolution: "@types/node@npm:20.9.0"
+  dependencies:
+    undici-types: "npm:~5.26.4"
+  checksum: 755d07de735eafda4e20af75ad9d03bdbfddef327d790e9a896142eac7493db5d8501591376e1c8227aa12eeb88e522bc727c6024504842ed40e539e8a466db9
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^20.8.10":
   version: 20.8.10
   resolution: "@types/node@npm:20.8.10"
   dependencies:
     undici-types: "npm:~5.26.4"
   checksum: caaa3ae9294f1bfdacb029a916c64af63cbcea613a52f53ea86f93c91779859af177b2b68113ef835194519f5e76cadda08559929b68297f1a8a568c207f9f66
+  languageName: node
+  linkType: hard
+
+"@types/papaparse@npm:^5.3.11":
+  version: 5.3.11
+  resolution: "@types/papaparse@npm:5.3.11"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 1b967274ca6e14d3a82944efad409e93e90cc605145fc94dd003706e2765b03433f26b9deaf515ba9e4c00cb903cc1a70eb19bc1f3063f81073ab4592830fb9e
   languageName: node
   linkType: hard
 
@@ -2897,6 +2915,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"papaparse@npm:^5.4.1":
+  version: 5.4.1
+  resolution: "papaparse@npm:5.4.1"
+  checksum: 201f37c4813453fed5bfb4c01816696b099d2db9ff1e8fb610acc4771fdde91d2a22b6094721edb0fedb21ca3c46f04263f68be4beb3e35b8c72278f0cedc7b7
+  languageName: node
+  linkType: hard
+
 "path-is-absolute@npm:^1.0.0":
   version: 1.0.1
   resolution: "path-is-absolute@npm:1.0.1"
@@ -3469,6 +3494,7 @@ __metadata:
     "@tauri-apps/api": "npm:^1.5.0"
     "@tauri-apps/cli": "npm:^1.5.0"
     "@types/node": "npm:^20.8.10"
+    "@types/papaparse": "npm:^5.3.11"
     "@types/pluralize": "npm:^0.0.32"
     "@types/react": "npm:^18.2.15"
     "@types/react-dom": "npm:^18.2.7"
@@ -3479,6 +3505,7 @@ __metadata:
     dayjs: "npm:^1.11.10"
     json-to-csv-export: "npm:^2.1.1"
     lucide-react: "npm:^0.291.0"
+    papaparse: "npm:^5.4.1"
     pluralize: "npm:^8.0.0"
     postcss: "npm:^8.4.31"
     react: "npm:^18.2.0"
@@ -3494,6 +3521,7 @@ __metadata:
     tailwindcss: "npm:^3.3.5"
     tailwindcss-animate: "npm:^1.0.7"
     tauri-plugin-sql: "https://github.com/tauri-apps/tauri-plugin-sql#v1"
+    tauri-plugin-store: "https://github.com/tauri-apps/tauri-plugin-store#v1"
     typescript: "npm:^5.0.2"
     vite: "npm:^4.4.4"
     zod: "npm:^3.22.4"
@@ -3617,6 +3645,15 @@ __metadata:
   dependencies:
     "@tauri-apps/api": "npm:1.5.1"
   checksum: a18599936f3c442cd19acbb19e7ee85f966463db517b7418f513949d0c1e8e004206e8c0767c4ddd0603eca9f99a603ac6b955531bf9c779832d2c9f673940e6
+  languageName: node
+  linkType: hard
+
+"tauri-plugin-store@https://github.com/tauri-apps/tauri-plugin-store#v1":
+  version: 0.0.0
+  resolution: "tauri-plugin-store@https://github.com/tauri-apps/tauri-plugin-store.git#commit=6e19887b1bdea9b921a31993d72396a350731e07"
+  dependencies:
+    "@tauri-apps/api": "npm:1.5.1"
+  checksum: 3b561ed61522b9988e0d50628a3c77a1db3d0ed50cbb1d578766f846e2972989c65092199e769c1963f00592fc5a0aca96803f7eba6bcb8d929da14b873f419c
   languageName: node
   linkType: hard
 

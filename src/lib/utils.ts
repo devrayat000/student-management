@@ -1,13 +1,15 @@
 import Database from "tauri-plugin-sql";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-
+import { Store } from "tauri-plugin-store";
 import sql from "./sql";
 import { batches, classes, payments, students } from "../database/schema";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const store = new Store(".settings.dat");
 
 const DATABASE = "sqlite:stdmngmt.db";
 

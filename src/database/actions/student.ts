@@ -53,6 +53,12 @@ async function readOne(id?: number | string) {
   return result.length ? result[0] : null;
 }
 
+async function readRaw() {
+  const { text, values } = bricks.select().from("students").toParams();
+  const result = await db().select<IStudentWithClassAndBatch[]>(text, values);
+  return result;
+}
+
 async function readAll() {
   const { text, values } = bricks
     .select([
@@ -123,6 +129,7 @@ export {
   readOne,
   readAll,
   readByBatch,
+  readRaw,
   create,
   update,
   del as delete,

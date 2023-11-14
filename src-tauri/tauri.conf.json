@@ -8,32 +8,21 @@
   },
   "package": {
     "productName": "Student Management",
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "tauri": {
     "allowlist": {
       "all": false,
-      "shell": {
-        "all": false,
+      "fs": {
+        "writeFile": true,
+        "readFile": true
+      },
+      "dialog": {
+        "save": true,
         "open": true
       },
-      "window": {
-        "all": true,
-        "create": true,
-        "print": true
-      },
-      "fs": {
-        "all": true,
-        "copyFile": false,
-        "createDir": false,
-        "exists": false,
-        "readDir": false,
-        "readFile": false,
-        "removeDir": false,
-        "removeFile": false,
-        "renameFile": false,
-        "scope": [],
-        "writeFile": true
+      "path": {
+        "all": true
       }
     },
     "bundle": {

@@ -32,7 +32,6 @@ import { Input } from "~/components/ui/input";
 import * as student from "~/database/actions/student";
 import DeletePrompt from "~/components/common/DeletePrompt";
 import Spinner from "~/components/common/Spinner";
-import { Badge } from "~/components/ui/badge";
 import { cn } from "~/lib/utils";
 
 export const columns: ColumnDef<IStudentWithClassAndBatch>[] = [
