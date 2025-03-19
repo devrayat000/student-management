@@ -1,31 +1,29 @@
-import { LuArrowLeft } from "react-icons/lu";
-import { useNavigate } from "react-router";
-
-import { Button } from "~/components/ui/button";
+import { makeStyles, Title1 } from "@fluentui/react-components";
 
 export interface DetailsPageLayoutProps {
   children: React.ReactNode;
   title: string;
 }
 
+const useStyles = makeStyles({
+  header: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: "1rem",
+  },
+});
+
 export default function DetailsPageLayout({
   children,
   title,
 }: DetailsPageLayoutProps) {
-  const navigate = useNavigate();
+  const classes = useStyles();
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <Button
-          variant="ghost"
-          onClick={() => navigate(-1)}
-          className="justify-self-start"
-        >
-          <LuArrowLeft className="w-5 h-5" />
-        </Button>
-        <h1 className="text-lg font-medium justify-self-center">{title}</h1>
-        <div />
+      <div className={classes.header}>
+        <Title1 weight="medium">{title}</Title1>
       </div>
 
       {children}

@@ -38,10 +38,7 @@ async function readOne(id?: number | string) {
 }
 
 async function readAll() {
-  const { text, values } = bricks.select().from("batches").toParams();
-  const result = await db().select<IBatch[]>(text, values);
-
-  return result;
+  return await db.select().from(batches);
 }
 
 async function deleteMany(ids: (string | number)[]) {

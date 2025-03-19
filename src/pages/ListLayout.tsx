@@ -1,6 +1,6 @@
 import { makeStyles, Title1, Button } from "@fluentui/react-components";
 import { Add16Filled, Add16Regular, bundleIcon } from "@fluentui/react-icons";
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 
 export interface ListLayoutProps {
   title: string;
@@ -22,20 +22,22 @@ const Add = bundleIcon(Add16Filled, Add16Regular);
 
 export default function ListLayout({ children, title }: ListLayoutProps) {
   const classes = useStyles();
+  const navigate = useNavigate();
+
   return (
     <div>
       <div className={classes.header}>
         <Title1 weight="medium">{title}</Title1>
-        <Link
-          // as={Link}
+        <Button
           to="create"
-          // className="px-4 py-1 bg-gray-800 text-white rounded-lg flex items-center gap-x-2 text-sm"
-          // icon={<Add />}
-          // iconPosition="after"
-          // appearance="primary"
+          className="px-4 py-1 bg-gray-800 text-white rounded-lg flex items-center gap-x-2 text-sm"
+          icon={<Add />}
+          iconPosition="after"
+          appearance="primary"
+          onClick={() => navigate("create")}
         >
           Create
-        </Link>
+        </Button>
       </div>
       {children}
     </div>

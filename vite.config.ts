@@ -1,10 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import griffel from "@griffel/vite-plugin";
 import path from "node:path";
 
 // https://vitejs.dev/config/
-export default defineConfig(async () => ({
-  plugins: [react()],
+export default defineConfig(async ({ command }) => ({
+  plugins: [react(), command === "build" && griffel()],
   build: {
     rollupOptions: {
       input: {
@@ -12,6 +13,7 @@ export default defineConfig(async () => ({
         splashscreen: path.resolve(__dirname, "splashscreen.html"),
       },
     },
+    target: "esnext",
   },
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`

@@ -1,5 +1,5 @@
 import { Suspense, useState } from "react";
-import { Link, Navigate, useParams } from "react-router";
+import { Link, Navigate, useNavigate, useParams } from "react-router";
 import useSWR from "swr";
 import {
   ColumnDef,
@@ -12,43 +12,111 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { LuArrowUpDown, LuEye } from "react-icons/lu";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { AiOutlineEdit } from "react-icons/ai";
 
 import ListLayout from "../ListLayout";
-import { IClass } from "~/database/schema";
 import {
+  Body1,
+  Button,
+  Checkbox,
+  Input,
+  makeStyles,
+  SearchBox,
+  Spinner,
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableHeader,
+  TableHeaderCell,
   TableRow,
-} from "~/components/ui/table";
-import { Button } from "~/components/ui/button";
-import { Checkbox } from "~/components/ui/checkbox";
-import { Input } from "~/components/ui/input";
-import DeletePrompt from "~/components/common/DeletePrompt";
-import Spinner from "~/components/common/Spinner";
+  tokens,
+} from "@fluentui/react-components";
 import capitalize from "capitalize";
 import { contentKeys, contents } from "./utils";
 import { singular } from "pluralize";
+import {
+  ArrowLeft16Filled,
+  ArrowLeft16Regular,
+  ArrowRight16Filled,
+  ArrowRight16Regular,
+  bundleIcon,
+  ChevronUpDown16Filled,
+  ChevronUpDown16Regular,
+  Delete16Filled,
+  Delete16Regular,
+  Edit16Filled,
+  Edit16Regular,
+  Eye16Filled,
+  Eye16Regular,
+} from "@fluentui/react-icons";
+import { ask } from "@tauri-apps/plugin-dialog";
 
-export const columns: ColumnDef<IClass>[] = [
+const ArrowUpDown = bundleIcon(ChevronUpDown16Filled, ChevronUpDown16Regular);
+const ArrowLeft = bundleIcon(ArrowLeft16Filled, ArrowLeft16Regular);
+const ArrowRight = bundleIcon(ArrowRight16Filled, ArrowRight16Regular);
+const Eye = bundleIcon(Eye16Filled, Eye16Regular);
+const Edit = bundleIcon(Edit16Filled, Edit16Regular);
+const Delete = bundleIcon(Delete16Filled, Delete16Regular);
+
+const useStyles = makeStyles({
+  searchContainer: {
+    display: "flex",
+    alignItems: "center",
+    paddingTop: "1rem",
+    paddingBottom: "1rem",
+  },
+  search: {
+    flex: 1,
+    maxWidth: "400px",
+  },
+  actionContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: "0.5rem",
+  },
+  deleteAction: {
+    backgroundColor: tokens.colorStatusDangerForeground3,
+    color: tokens.colorStatusDangerBackground1,
+    ":hover": {
+      backgroundColor: tokens.colorStatusDangerForegroundInverted,
+    },
+    ":hover:active": {
+      backgroundColor: tokens.colorStatusDangerForeground2,
+    },
+  },
+  controlContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: "1rem",
+    columnGap: "0.5rem",
+    paddingBottom: "1rem",
+    paddingTop: "1rem",
+  },
+  stat: {
+    color: tokens.colorNeutralForeground1Static,
+  },
+  paginationContainer: {
+    display: "flex",
+    gap: "0.5rem",
+  },
+});
+
+export const columns: ColumnDef<
+  Awaited<ReturnType<typeof contents.classes.readAll>>[number]
+>[] = [
   {
     id: "select",
     header: ({ table }) => (
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onChange={(_, data) => table.toggleAllPageRowsSelected(!!data.checked)}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        onChange={(_, data) => row.toggleSelected(!!data.checked)}
         aria-label="Select row"
       />
     ),
@@ -64,11 +132,12 @@ export const columns: ColumnDef<IClass>[] = [
     header: ({ column }) => {
       return (
         <Button
-          variant="ghost"
+          appearance="subtle"
+          icon={<ArrowUpDown />}
+          iconPosition="after"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Class Name
-          <LuArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
@@ -78,34 +147,35 @@ export const columns: ColumnDef<IClass>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const clz = row.original;
-      const { content } = useParams();
+      const navigate = useNavigate();
+      const classes = useStyles();
 
       return (
-        <div className="flex gap-1 items-center">
-          <Button size="icon" variant="outline" asChild className="h-8 w-10">
-            <Link to={clz.id.toString()}>
-              <LuEye className="w-3.5 h-3.5 text-slate-700" />
-            </Link>
-          </Button>
-          <Button size="icon" variant="outline" asChild className="h-8 w-10">
-            <Link to={`${clz.id.toString()}/edit`}>
-              <AiOutlineEdit className="w-3.5 h-3.5 text-slate-700" />
-            </Link>
-          </Button>
+        <div className={classes.actionContainer}>
+          <Button icon={<Eye />} onClick={() => navigate(`./${clz.id}`)} />
           <Button
-            size="icon"
-            variant="outline"
-            asChild
-            className="h-8 w-10 border-red-200 hover:bg-red-300/10"
-          >
-            <DeletePrompt
-              element={singular(content!)}
-              itemId={clz.id}
-              onDelete={contents[content! as keyof typeof contents].delete}
-            >
-              <RiDeleteBin6Line className="w-3.5 h-3.5 text-red-500" />
-            </DeletePrompt>
-          </Button>
+            icon={<Edit />}
+            onClick={() => navigate(`./${clz.id?.toString()}/edit`)}
+          />
+          <Button
+            icon={<Delete />}
+            className={classes.deleteAction}
+            onClick={async () => {
+              await ask(
+                `This action cannot be undone. This will permanently delete the ${clz.id}.`,
+                {
+                  cancelLabel: "Cancel",
+                  okLabel: "Continue",
+                  kind: "warning",
+                  title: "Are you absolutely sure?",
+                }
+              );
+
+              // if (yes) {
+              //   await student.remove(clz.id);
+              // }
+            }}
+          />
         </div>
       );
     },
@@ -156,17 +226,18 @@ function ContentsPageInner() {
       rowSelection,
     },
   });
+  const classes = useStyles();
 
   return (
     <div>
-      <div className="flex items-center py-4">
-        <Input
+      <div className={classes.searchContainer}>
+        <SearchBox
           placeholder={`Filter ${content}...`}
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+          onChange={(_, data) =>
+            table.getColumn("name")?.setFilterValue(data.value)
           }
-          className="max-w-sm"
+          className={classes.search}
         />
       </div>
       <div>
@@ -176,14 +247,14 @@ function ContentsPageInner() {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHeaderCell key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                    </TableHead>
+                    </TableHeaderCell>
                   );
                 })}
               </TableRow>
@@ -219,25 +290,28 @@ function ContentsPageInner() {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+      <div className={classes.controlContainer}>
+        <Body1 className={classes.stat}>
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-        <div className="space-x-2">
+        </Body1>
+        <div className={classes.paginationContainer}>
           <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
+            appearance="outline"
+            size="medium"
+            onClick={table.previousPage}
             disabled={!table.getCanPreviousPage()}
+            icon={<ArrowLeft />}
           >
             Previous
           </Button>
           <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
+            appearance="outline"
+            size="medium"
+            onClick={table.nextPage}
             disabled={!table.getCanNextPage()}
+            icon={<ArrowRight />}
+            iconPosition="after"
           >
             Next
           </Button>

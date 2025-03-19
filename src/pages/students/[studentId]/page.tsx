@@ -1,12 +1,19 @@
 import { Suspense } from "react";
 import useSWR from "swr";
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 
-import { Button, Input, Label } from "@fluentui/react-components";
+import {
+  Button,
+  Field,
+  Input,
+  Label,
+  makeStyles,
+  Spinner,
+  tokens,
+} from "@fluentui/react-components";
 import DetailsPageLayout from "~/pages/DetailsPageLayout";
 import * as student from "~/database/actions/student";
-import Spinner from "~/components/common/Spinner";
-import DeletePrompt from "~/components/common/DeletePrompt";
+// import DeletePrompt from "~/components/common/DeletePrompt";
 import PaymentHistory from "./PaymentHistory";
 
 export default function StudentDetailsPage() {
@@ -19,6 +26,32 @@ export default function StudentDetailsPage() {
   );
 }
 
+const useStyles = makeStyles({
+  formContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: tokens.spacingVerticalS,
+  },
+  idField: {
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+  idInput: {
+    width: "13rem",
+  },
+  deleteBtn: {
+    width: "100%",
+    backgroundColor: tokens.colorStatusDangerForeground3,
+    color: tokens.colorStatusDangerBackground1,
+    ":hover": {
+      backgroundColor: tokens.colorStatusDangerForegroundInverted,
+    },
+    ":hover:active": {
+      backgroundColor: tokens.colorStatusDangerForeground2,
+    },
+  },
+});
+
 function StudentDetailsPageInner() {
   const { studentId } = useParams();
   const { data } = useSWR(
@@ -28,44 +61,38 @@ function StudentDetailsPageInner() {
       suspense: true,
     }
   );
+  const classes = useStyles();
 
   return (
-    <div className="flex flex-col gap-3">
-      <div>
-        <div className="flex justify-end">
-          <Input disabled defaultValue={data?.id} className="w-52" />
-        </div>
-        <div>
-          <Label>Student's Name</Label>
-          <Input disabled defaultValue={data?.name} />
-        </div>
-        <div>
-          <Label>Class</Label>
-          <Input disabled defaultValue={data?.class} />
-        </div>
-        <div>
-          <Label>Batch</Label>
-          <Input disabled defaultValue={data?.batch} />
-        </div>
-        <div>
-          <Label>Phone no.</Label>
-          <Input type="tel" disabled defaultValue={data?.phone} />
-        </div>
-        <div className="flex items-center gap-3">
-          {/* <Button className="w-full mt-1" asChild>
-            <Link to="./edit">Update</Link>
-          </Button> */}
-          <DeletePrompt
-            id="student"
-            itemId={studentId}
-            onDelete={student.delete}
+    <div>
+      <div className={classes.formContainer}>
+        <Field className={classes.idField}>
+          <Input
+            disabled
+            defaultValue={data?.id.toString()}
+            className={classes.idInput}
           />
-        </div>
+        </Field>
+        <Field label="Student's Name">
+          <Input disabled defaultValue={data?.name} />
+        </Field>
+        <Field label="Phone no.">
+          <Input type="tel" disabled defaultValue={data?.phone} />
+        </Field>
+        <Field label="Class">
+          <Input disabled defaultValue={data?.class?.toString()} />
+        </Field>
+        <Field label="Batch">
+          <Input disabled defaultValue={data?.batch?.toString()} />
+        </Field>
+        <Button appearance="primary" className={classes.deleteBtn}>
+          Delete
+        </Button>
       </div>
 
-      {/* <div className="mt-3">
+      <div className="mt-3">
         <PaymentHistory />
-      </div> */}
+      </div>
     </div>
   );
 }

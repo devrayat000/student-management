@@ -1,9 +1,6 @@
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router";
-import { LuSquareStack } from "react-icons/lu";
-import { BiHome as LuHome } from "react-icons/bi";
-import { RiGroupLine } from "react-icons/ri";
-import { SiGoogleclassroom } from "react-icons/si";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import {
+  Button,
   FluentProvider,
   makeStyles,
   Tooltip,
@@ -15,11 +12,9 @@ import {
   Hamburger,
   NavDrawer,
   NavDrawerBody,
-  NavDrawerHeader,
   NavItem,
 } from "@fluentui/react-nav-preview";
 
-import { cn } from "~/lib/utils";
 import { useState } from "react";
 import {
   bundleIcon,
@@ -30,12 +25,18 @@ import {
   Settings20Regular,
   Person20Filled,
   Person20Regular,
+  ArrowLeft16Filled,
+  ArrowLeft16Regular,
+  Class20Filled,
+  Class20Regular,
+  PeopleTeam20Filled,
+  PeopleTeam20Regular,
 } from "@fluentui/react-icons";
 
 const useStyles = makeStyles({
   container: {
     display: "flex",
-    height: "98vh",
+    height: "100vh",
     overflow: "hidden",
   },
   nav: {
@@ -44,15 +45,22 @@ const useStyles = makeStyles({
   content: {
     flex: 1,
     padding: "1rem",
-    // display: "grid",
-    // justifyContent: "flex-start",
-    // alignItems: "flex-start",
+    overflowY: "auto",
   },
+  control: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  appItem: { flex: 1 },
 });
 
+const Left = bundleIcon(ArrowLeft16Filled, ArrowLeft16Regular);
 const Home = bundleIcon(Home20Filled, Home20Regular);
 const Person = bundleIcon(Person20Filled, Person20Regular);
 const Settings = bundleIcon(Settings20Filled, Settings20Regular);
+const Class = bundleIcon(Class20Filled, Class20Regular);
+const Group = bundleIcon(PeopleTeam20Filled, PeopleTeam20Regular);
 
 export default function RootLayout() {
   const [isOpen, setIsOpen] = useState(true);
@@ -64,7 +72,7 @@ export default function RootLayout() {
   const toggle = () => setIsOpen((prev) => !prev);
 
   return (
-    <FluentProvider theme={webLightTheme}>
+    <FluentProvider theme={webLightTheme} applyStylesToPortals>
       <div className={classes.container}>
         <NavDrawer
           open={isOpen}
@@ -75,18 +83,37 @@ export default function RootLayout() {
           selectedValue={pathname}
         >
           <NavDrawerBody>
-            <AppItem icon={<PersonCircle32Regular />} as="a">
-              Contoso HR
-            </AppItem>
+            <div className={classes.control}>
+              <Button
+                appearance="subtle"
+                onClick={() => navigate(-1)}
+                className="justify-self-start"
+                icon={<Left />}
+                disabled={pathname === "/"}
+              />
+              <AppItem
+                icon={<PersonCircle32Regular />}
+                onClick={() => navigate("/")}
+                className={classes.appItem}
+              >
+                Contoso HR
+              </AppItem>
+            </div>
             <NavItem icon={<Home />} value="/">
               Home
             </NavItem>
             <NavItem icon={<Person />} value="/students">
-              Student
+              Students
             </NavItem>
-            <NavItem icon={<Settings />} value="/settings">
+            <NavItem icon={<Class />} value="/classes">
+              Classes
+            </NavItem>
+            <NavItem icon={<Group />} value="/batches">
+              Batches
+            </NavItem>
+            {/* <NavItem icon={<Settings />} value="/settings">
               Settings
-            </NavItem>
+            </NavItem> */}
           </NavDrawerBody>
         </NavDrawer>
         <main className={classes.content}>
@@ -95,8 +122,9 @@ export default function RootLayout() {
           </Tooltip>
           <Outlet />
         </main>
-        <div id="blabla" />
       </div>
+      <div id="dialog-portal"></div>
+      <div id="dropdown-portal"></div>
     </FluentProvider>
   );
 }

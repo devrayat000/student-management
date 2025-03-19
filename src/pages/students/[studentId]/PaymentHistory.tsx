@@ -3,20 +3,18 @@ import { useParams } from "react-router";
 import useSWR from "swr";
 import dayjs from "dayjs";
 
-import Spinner from "~/components/common/Spinner";
 import * as payment from "~/database/actions/payment";
 import CreatePayment from "./CreatePayment";
 import EditPayment from "./UpdatePayment";
 import DeletePayment from "./DeletePayment";
+import { Spinner, Title2, Title3 } from "@fluentui/react-components";
 
 export default function PaymentHistory() {
   return (
     <div>
       <div className="flex items-center justify-between">
         <div className="w-10" />
-        <h2 className="text-center font-bold text-2xl justify-self-center">
-          Payment History
-        </h2>
+        <Title3 weight="bold">Payment History</Title3>
 
         <CreatePayment />
       </div>
@@ -45,7 +43,7 @@ function PaymentHistoryInner() {
       )}
       {data?.map((payment) => (
         <li
-          key={payment.id}
+          key={`${payment.month}-${payment.year}`}
           className="p-2 rounded-md border border-slate-400 relative"
         >
           <div>
@@ -60,8 +58,8 @@ function PaymentHistoryInner() {
 
           <div className="absolute top-3 right-3">
             <div className="flex gap-1 items-center">
-              <EditPayment paymentId={payment.id} />
-              <DeletePayment paymentId={payment.id} studentId={studentId} />
+              <EditPayment />
+              {/* <DeletePayment paymentId={payment.id} studentId={studentId} /> */}
             </div>
           </div>
         </li>

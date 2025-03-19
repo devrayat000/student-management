@@ -8,39 +8,29 @@ import {
   Button,
   Input,
   Field,
-  Select,
   Combobox,
-  Option,
   ComboboxProps,
   useComboboxFilter,
+  makeStyles,
 } from "@fluentui/react-components";
 
-// import {
-//   Form,
-//   FormControl,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormMessage,
-// } from "~/components/ui/form";
 import DetailsPageLayout from "~/pages/DetailsPageLayout";
 import * as student from "~/database/actions/student";
 import * as batch from "~/database/actions/batch";
 import * as clazz from "~/database/actions/class";
-import {
-  // Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
 import Spinner from "~/components/common/Spinner";
 
 const createStudentSchema = z.object({
   name: z.string().min(1, "Name is required"),
   phone: z.string().min(1, "Phone is required"),
-  classId: z.string().optional(),
-  batchId: z.string().transform(Number).optional(),
+  classId: z
+    .string()
+    .transform((val) => parseInt(val))
+    .optional(),
+  batchId: z
+    .string()
+    .transform((val) => parseInt(val))
+    .optional(),
 });
 
 export default function CreateStudentPage() {
@@ -53,8 +43,20 @@ export default function CreateStudentPage() {
   );
 }
 
+const useStyles = makeStyles({
+  submit: {
+    width: "100%",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
+  },
+});
+
 function CreateStudentPageInner() {
   const navigate = useNavigate();
+  const clz = useStyles();
   const form = useForm<z.infer<typeof createStudentSchema>>({
     resolver: zodResolver(createStudentSchema),
   });
@@ -63,11 +65,11 @@ function CreateStudentPageInner() {
   const { data: classes } = useSWR(["classes"], clazz.readAll, {
     suspense: true,
   });
-  // const { data: batches } = useSWR(["batches"], batch.readAll, {
-  //   suspense: true,
-  // });
+  const { data: batches } = useSWR(["batches"], batch.readAll, {
+    suspense: true,
+  });
 
-  const children = useComboboxFilter(
+  const classOptions = useComboboxFilter(
     query,
     classes.map((c) => ({ children: c.name, value: c.id.toString() })),
     {
@@ -75,26 +77,40 @@ function CreateStudentPageInner() {
       optionToText: (option) => option.children,
     }
   );
-  const onOptionSelect: ComboboxProps["onOptionSelect"] = (_, data) => {
+  const batchOptions = useComboboxFilter(
+    query,
+    batches.map((c) => ({ children: c.name, value: c.id.toString() })),
+    {
+      noOptionsMessage: "No animals match your search.",
+      optionToText: (option) => option.children,
+    }
+  );
+  const onClassSelect: ComboboxProps["onOptionSelect"] = (_, data) => {
     setQuery(data.optionText ?? "");
+    form.setValue("classId", parseInt(data.optionValue!));
+  };
+  const onBatchSelect: ComboboxProps["onOptionSelect"] = (_, data) => {
+    setQuery(data.optionText ?? "");
+    form.setValue("batchId", parseInt(data.optionValue!));
   };
 
-  // async function createStudent(data: z.infer<typeof createStudentSchema>) {
-  //   console.log(data);
-  //   const result = await student.create(data);
-  //   console.log(result);
-  //   await mutate(["students"]);
-  //   navigate(`../${result[0].id}`, { replace: true });
-  // }
+  async function createStudent(data: z.infer<typeof createStudentSchema>) {
+    console.log(data);
+    const result = await student.create(data);
+    console.log(result);
+    await mutate(["students"]);
+    navigate(`../${result[0].id}`, { replace: true });
+  }
 
   return (
     <FormProvider {...form}>
       <form
-        // onSubmit={form.handleSubmit(createStudent)}
+        onSubmit={form.handleSubmit(createStudent)}
         autoCorrect="off"
         autoCapitalize="off"
         autoComplete="off"
         aria-autocomplete="none"
+        className={clz.form}
       >
         <Controller
           name="name"
@@ -151,84 +167,43 @@ function CreateStudentPageInner() {
               validationMessage={fieldState.error?.message}
             >
               <Combobox
-                open
-                value={field.value}
+                value={field.value?.toString()}
                 onInput={field.onChange}
-                onOptionSelect={onOptionSelect}
+                onOptionSelect={onClassSelect}
                 placeholder="Create a class first"
-                mountNode={document.getElementById("blabla")}
+                mountNode={document.getElementById("dropdown-portal")}
                 clearable
               >
-                {children}
+                {classOptions}
               </Combobox>
             </Field>
           )}
         />
-        {/* <FormField
+        <Controller
+          name="batchId"
           control={form.control}
-          name="classId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone no.</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value?.toString()}
+          render={({ field, fieldState }) => (
+            <Field
+              label="Batch"
+              validationState={fieldState.invalid ? "error" : "none"}
+              validationMessage={fieldState.error?.message}
+            >
+              <Combobox
+                value={field.value?.toString()}
+                onInput={field.onChange}
+                onOptionSelect={onBatchSelect}
+                placeholder="Create a batch first"
+                mountNode={document.getElementById("dropdown-portal")}
+                clearable
               >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a class" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {!classes.length && (
-                    <SelectItem value="0" disabled>
-                      Create a class first
-                    </SelectItem>
-                  )}
-                  {classes?.map((clazz) => (
-                    <SelectItem value={clazz.id.toString()} key={clazz.id}>
-                      {clazz.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
+                {batchOptions}
+              </Combobox>
+            </Field>
           )}
         />
-        <FormField
-          control={form.control}
-          name="batchId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone no.</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value?.toString()}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a batch" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {!batches.length && (
-                    <SelectItem value="0" disabled>
-                      Create a batch first
-                    </SelectItem>
-                  )}
-                  {batches?.map((clazz) => (
-                    <SelectItem value={clazz.id.toString()} key={clazz.id}>
-                      {clazz.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
-        <Button className="w-full mt-3">Create</Button>
+        <Button appearance="primary" className={clz.submit} size="large">
+          Create
+        </Button>
       </form>
     </FormProvider>
   );

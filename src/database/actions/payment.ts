@@ -1,93 +1,74 @@
 import bricks from "sql-bricks";
 
 import { db } from "~/lib/utils";
-import { IPaymentHistory } from "../schema";
+import { payments } from "../schema";
+import { eq, InferInsertModel } from "drizzle-orm";
 
 async function getPaymentHistoryByStudentId(id?: number | string) {
   if (!id) return null;
   id = typeof id === "string" ? parseInt(id) : id;
 
-  const { text, values } = bricks
-    .select(["id", "month", "amount", "paymentDate"])
-    .from("payments")
-    .where("studentId", id)
-    .orderBy("paymentDate DESC")
-    .toParams();
-  console.log(text);
-
-  const result = await db().select<IPaymentHistory[]>(text, values);
-
-  return result;
+  return await db.query.payments.findMany({
+    where: (table, { eq }) => eq(table.studentId, id),
+    columns: {
+      month: true,
+      year: true,
+      amount: true,
+      paymentDate: true,
+    },
+    orderBy: (table, { desc }) => desc(table.paymentDate),
+  });
 }
 
 async function readRaw() {
-  const { text, values } = bricks.select().from("payments").toParams();
-  const result = await db().select<IPaymentHistory[]>(text, values);
-  return result;
+  return db.select().from(payments);
 }
 
-async function readOne(paymentId: string | number) {
-  paymentId = typeof paymentId === "string" ? parseInt(paymentId) : paymentId;
-
-  const { text, values } = bricks
-    .select(["id", "month", "amount"])
-    .from("payments")
-    .where("id", paymentId)
-    .toParams();
-  console.log(text);
-
-  const result = await db().select<IPaymentHistory[]>(text, values);
-
-  return !!result.length ? result[0] : null;
-}
-
-async function create(
-  data: Pick<IPaymentHistory, "month" | "amount">,
-  studentId?: number | string
-) {
-  if (!studentId) return null;
+async function readOne(studentId: string | number) {
   studentId = typeof studentId === "string" ? parseInt(studentId) : studentId;
+  const date = new Date();
 
-  const { text, values } = bricks
-    .insert("payments", {
-      ...data,
-      studentId,
-      paymentDate: bricks("CURRENT_TIMESTAMP"),
-    })
-    .toParams();
+  const result = await db.query.payments.findFirst({
+    where: (table, { eq, and }) =>
+      and(
+        eq(table.studentId, studentId),
+        eq(table.month, date.getMonth()),
+        eq(table.year, date.getFullYear())
+      ),
+    columns: {
+      month: true,
+      year: true,
+      amount: true,
+      paymentDate: true,
+    },
+  });
 
-  console.log(text, values);
-
-  const result = await db().execute(text, values);
   return result;
 }
 
-async function update(
-  paymentId: string | number,
-  data: Pick<IPaymentHistory, "month" | "amount">
-) {
-  paymentId = typeof paymentId === "string" ? parseInt(paymentId) : paymentId;
-
-  const { text, values } = bricks
-    .update("payments", data)
-    .where({ id: paymentId })
-    .toParams();
-
-  console.log(text, values);
-
-  const result = await db().execute(text, values);
-  return result;
+async function create(data: InferInsertModel<typeof payments>) {
+  const result = await db.insert(payments).values(data).returning();
+  return result[0];
 }
 
-async function del(paymentId: string | number) {
-  paymentId = typeof paymentId === "string" ? parseInt(paymentId) : paymentId;
+async function update({
+  studentId,
+  ...data
+}: Partial<InferInsertModel<typeof payments>>) {
+  const result = await db
+    .update(payments)
+    .set(data)
+    .where(eq(payments.studentId, studentId!))
+    .returning();
+  return result[0];
+}
 
-  const { text, values } = bricks
-    .delete("payments")
-    .where({ id: paymentId })
-    .toParams();
-  const result = await db().execute(text, values);
-  return result;
+async function del(studentId: number) {
+  const result = await db
+    .delete(payments)
+    .where(eq(payments.studentId, studentId))
+    .returning();
+  return result[0];
 }
 
 export {

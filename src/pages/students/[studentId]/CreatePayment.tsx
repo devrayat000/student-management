@@ -1,46 +1,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { LuPlus } from "react-icons/lu";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { z } from "zod";
 
 import * as payment from "~/database/actions/payment";
-import { Button } from "~/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
-import { ScrollArea } from "~/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
 import { mutate } from "swr";
 import { Month } from "~/lib/utils";
+import {
+  Field,
+  Option,
+  Button,
+  Input,
+  Select,
+  makeStyles,
+  tokens,
+} from "@fluentui/react-components";
 
 const createPaymentSchema = z.object({
   month: z.nativeEnum(Month).transform(Number),
@@ -55,103 +29,98 @@ const createPaymentSchema = z.object({
     ),
 });
 
+const useStyles = makeStyles({
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: tokens.spacingVerticalS,
+  },
+  saveBtn: {
+    width: "100%",
+    backgroundColor: tokens.colorStatusSuccessForeground3,
+    color: tokens.colorStatusSuccessBackground1,
+    ":hover": {
+      backgroundColor: tokens.colorStatusSuccessForegroundInverted,
+    },
+    ":hover:active": {
+      backgroundColor: tokens.colorStatusSuccessForeground2,
+    },
+  },
+});
+
 export default function CreatePayment() {
-  const [open, setOpen] = useState(false);
   const { studentId } = useParams();
+  const date = new Date();
   const form = useForm<z.infer<typeof createPaymentSchema>>({
     resolver: zodResolver(createPaymentSchema),
   });
+  const classes = useStyles();
 
   async function createPayment(data: z.infer<typeof createPaymentSchema>) {
     console.log(data);
-    const result = await payment.create(data, studentId);
+    const result = await payment.create({
+      studentId: parseInt(studentId!),
+      year: date.getFullYear(),
+      ...data,
+    });
     console.log(result);
     await mutate(["payments", studentId]);
-    setOpen(false);
   }
 
   return (
-    <TooltipProvider>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <DialogTrigger asChild>
-              <Button size="icon">
-                <LuPlus className="w-5 h-5" />
-              </Button>
-            </DialogTrigger>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Create new payment</p>
-          </TooltipContent>
-        </Tooltip>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Add Payment</DialogTitle>
-            <DialogDescription>
-              Make changes this payment profile here. Click save when you're
-              done.
-            </DialogDescription>
-          </DialogHeader>
-          <Form {...form}>
-            <form
-              className="grid gap-4 py-4"
-              onSubmit={form.handleSubmit(createPayment)}
+    <FormProvider {...form}>
+      <form
+        className={classes.form}
+        onSubmit={form.handleSubmit(createPayment)}
+      >
+        <Controller
+          control={form.control}
+          name="month"
+          render={({ field, fieldState }) => (
+            <Field
+              label="Month"
+              validationState={fieldState.invalid ? "error" : "none"}
+              validationMessage={fieldState.error?.message}
+              className="grid grid-cols-4 items-center gap-4"
             >
-              <FormField
-                control={form.control}
-                name="month"
-                render={({ field }) => (
-                  <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <FormLabel className="text-right">Month</FormLabel>
-                    <div className="col-span-3">
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value?.toString()}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a month" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <ScrollArea className="h-[14rem]">
-                            {Object.entries(Month).map(([label, value]) => (
-                              <SelectItem value={value} key={value}>
-                                {label}
-                              </SelectItem>
-                            ))}
-                          </ScrollArea>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
+              <Select
+                {...field}
+                onChange={(_, data) => field.onChange(data.value)}
+                mountNode={document.getElementById("dropdown-portal")}
+              >
+                {Object.entries(Month).map(([label, value]) => (
+                  <Option value={value} key={value}>
+                    {label}
+                  </Option>
+                ))}
+              </Select>
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="amount"
+          render={({ field, fieldState }) => (
+            <Field
+              label="Amount"
+              validationState={fieldState.invalid ? "error" : "none"}
+              validationMessage={fieldState.error?.message}
+              className="grid grid-cols-4 items-center gap-4"
+            >
+              <Input
+                placeholder="1000"
+                type="number"
+                {...field}
+                value={field.value?.toString()}
               />
-              <FormField
-                control={form.control}
-                name="amount"
-                render={({ field }) => (
-                  <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <FormLabel className="text-right">Amount</FormLabel>
-                    <div className="col-span-3">
-                      <FormControl>
-                        <Input placeholder="1000" type="number" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <DialogFooter>
-                <Button type="submit">Save</Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
-    </TooltipProvider>
+            </Field>
+          )}
+        />
+        <Button appearance="primary" type="submit" className={classes.saveBtn}>
+          Save
+        </Button>
+      </form>
+    </FormProvider>
   );
 }
 

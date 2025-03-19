@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, BrowserRouter } from "react-router";
+import { Routes, Route, BrowserRouter } from "react-router";
 
 import { Toaster } from "./components/ui/toaster";
 

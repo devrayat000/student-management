@@ -25,10 +25,16 @@ import {
   Input,
   makeStyles,
   Body1,
+  tokens,
+  SearchBox,
 } from "@fluentui/react-components";
 import {
   ArrowLeft12Regular,
+  ArrowLeft16Filled,
+  ArrowLeft16Regular,
   ArrowRight12Regular,
+  ArrowRight16Filled,
+  ArrowRight16Regular,
   bundleIcon,
   ChevronUpDown20Filled,
   ChevronUpDown20Regular,
@@ -42,11 +48,14 @@ import {
 import * as student from "~/database/actions/student";
 import Spinner from "~/components/common/Spinner";
 import { ask } from "@tauri-apps/plugin-dialog";
+import { useNavigate } from "react-router";
 
 const Eye = bundleIcon(Eye16Filled, Eye16Regular);
 const Edit = bundleIcon(Edit16Filled, Edit16Regular);
 const Delete = bundleIcon(Delete16Filled, Delete16Regular);
 const ChevronUpDown = bundleIcon(ChevronUpDown20Filled, ChevronUpDown20Regular);
+const ArrowLeft = bundleIcon(ArrowLeft16Filled, ArrowLeft16Regular);
+const ArrowRight = bundleIcon(ArrowRight16Filled, ArrowRight16Regular);
 
 const useStyles = makeStyles({
   container: {},
@@ -82,17 +91,13 @@ const useStyles = makeStyles({
     gap: "0.5rem",
   },
   deleteAction: {
-    backgroundColor: "var(--colorStatusDangerBackground3)",
-    color: "var(--colorStatusDangerBackground1)",
+    backgroundColor: tokens.colorStatusDangerForeground3,
+    color: tokens.colorStatusDangerBackground1,
     ":hover": {
-      backgroundColor: "var(--colorStatusDangerBackground3Hover)",
-      color: "var(--colorStatusDangerBackground2)",
+      backgroundColor: tokens.colorStatusDangerForegroundInverted,
     },
-    // ":focus": {
-    //   backgroundColor: "var(--colorStatusDangerBackground3Pressed)",
-    // },
-    ":active": {
-      backgroundColor: "var(--colorStatusDangerBackground3Pressed)",
+    ":hover:active": {
+      backgroundColor: tokens.colorStatusDangerForeground2,
     },
   },
   noResult: {
@@ -109,7 +114,7 @@ const useStyles = makeStyles({
     paddingTop: "1rem",
   },
   stat: {
-    color: "var(--colorNeutralForeground1Static)",
+    color: tokens.colorNeutralForeground1Static,
   },
   paginationContainer: {
     display: "flex",
@@ -231,11 +236,15 @@ export const columns: ColumnDef<
     cell: ({ row }) => {
       const clz = row.original;
       const classes = useStyles();
+      const navigate = useNavigate();
 
       return (
         <div className={classes.actionContainer}>
-          <Button to={clz.id?.toString()} icon={<Eye />} />
-          <Button to={`${clz.id?.toString()}/edit`} icon={<Edit />} />
+          <Button icon={<Eye />} onClick={() => navigate(`./${clz.id}`)} />
+          <Button
+            icon={<Edit />}
+            onClick={() => navigate(`./${clz.id?.toString()}/edit`)}
+          />
           <Button
             icon={<Delete />}
             className={classes.deleteAction}
@@ -299,11 +308,11 @@ function StudentsPageInner() {
   return (
     <div>
       <div className={classes.searchContainer}>
-        <Input
+        <SearchBox
           placeholder="Filter students..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+          onChange={(_, data) =>
+            table.getColumn("name")?.setFilterValue(data.value)
           }
           className={classes.search}
         />
@@ -369,7 +378,7 @@ function StudentsPageInner() {
             size="medium"
             onClick={table.previousPage}
             disabled={!table.getCanPreviousPage()}
-            icon={<ArrowLeft12Regular />}
+            icon={<ArrowLeft />}
           >
             Previous
           </Button>
@@ -378,7 +387,7 @@ function StudentsPageInner() {
             size="medium"
             onClick={table.nextPage}
             disabled={!table.getCanNextPage()}
-            icon={<ArrowRight12Regular />}
+            icon={<ArrowRight />}
             iconPosition="after"
           >
             Next

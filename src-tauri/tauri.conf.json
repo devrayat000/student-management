@@ -1,7 +1,7 @@
 {
   "build": {
     "beforeDevCommand": "bun dev",
-    "beforeBuildCommand": "bun build",
+    "beforeBuildCommand": "bun run build",
     "frontendDist": "../dist",
     "devUrl": "http://localhost:1420"
   },
@@ -15,15 +15,15 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "createUpdaterArtifacts": "v1Compatible"
+    "createUpdaterArtifacts": true
   },
   "productName": "Student Management",
   "mainBinaryName": "Student Management",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "identifier": "com.rayat.dev",
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IERGNTg0QjJFMjkzM0FEMkUKUldRdXJUTXBMa3RZMzZiUnNWWkFWUmNlYy82M1pGMXJEY1JZV1V1bGJoNXRxeUt3UkZIWUhUWmoK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEFENjMzRjQ1NDAzMTEyMUMKUldRY0VqRkFSVDlqcmJJenRZWGd1OXcvdDV2WTRNYVRPa1JnaUZUL2N3cmFxTG0xUDZpK0tTMjYK",
       "endpoints": [
         "https://student-management-server-pi.vercel.app/{{target}}/{{arch}}/{{current_version}}"
       ]
