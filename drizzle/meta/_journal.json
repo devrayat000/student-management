@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1742295244321,
+      "tag": "0000_smart_eddie_brock",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1742295407825,
+      "tag": "0001_aberrant_charles_xavier",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1742296165219,
+      "tag": "0002_majestic_layla_miller",
+      "breakpoints": true
+    }
+  ]
+}

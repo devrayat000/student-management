@@ -1,26 +1,34 @@
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import useSWR, { mutate } from "swr";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
+  Button,
+  Input,
+  Field,
+  Select,
+  Combobox,
+  Option,
+  ComboboxProps,
+  useComboboxFilter,
+} from "@fluentui/react-components";
+
+// import {
+//   Form,
+//   FormControl,
+//   FormField,
+//   FormItem,
+//   FormLabel,
+//   FormMessage,
+// } from "~/components/ui/form";
 import DetailsPageLayout from "~/pages/DetailsPageLayout";
-import { Button } from "~/components/ui/button";
 import * as student from "~/database/actions/student";
 import * as batch from "~/database/actions/batch";
 import * as clazz from "~/database/actions/class";
 import {
-  Select,
+  // Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -31,7 +39,7 @@ import Spinner from "~/components/common/Spinner";
 const createStudentSchema = z.object({
   name: z.string().min(1, "Name is required"),
   phone: z.string().min(1, "Phone is required"),
-  classId: z.string().transform(Number).optional(),
+  classId: z.string().optional(),
   batchId: z.string().transform(Number).optional(),
 });
 
@@ -51,51 +59,112 @@ function CreateStudentPageInner() {
     resolver: zodResolver(createStudentSchema),
   });
 
+  const [query, setQuery] = useState<string>("");
   const { data: classes } = useSWR(["classes"], clazz.readAll, {
     suspense: true,
   });
-  const { data: batches } = useSWR(["batches"], batch.readAll, {
-    suspense: true,
-  });
+  // const { data: batches } = useSWR(["batches"], batch.readAll, {
+  //   suspense: true,
+  // });
 
-  async function createStudent(data: z.infer<typeof createStudentSchema>) {
-    console.log(data);
-    const result = await student.create(data);
-    console.log(result);
-    await mutate(["students"]);
-    navigate(`../${result.lastInsertId}`, { replace: true });
-  }
+  const children = useComboboxFilter(
+    query,
+    classes.map((c) => ({ children: c.name, value: c.id.toString() })),
+    {
+      noOptionsMessage: "No animals match your search.",
+      optionToText: (option) => option.children,
+    }
+  );
+  const onOptionSelect: ComboboxProps["onOptionSelect"] = (_, data) => {
+    setQuery(data.optionText ?? "");
+  };
+
+  // async function createStudent(data: z.infer<typeof createStudentSchema>) {
+  //   console.log(data);
+  //   const result = await student.create(data);
+  //   console.log(result);
+  //   await mutate(["students"]);
+  //   navigate(`../${result[0].id}`, { replace: true });
+  // }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(createStudent)}>
-        <FormField
-          control={form.control}
+    <FormProvider {...form}>
+      <form
+        // onSubmit={form.handleSubmit(createStudent)}
+        autoCorrect="off"
+        autoCapitalize="off"
+        autoComplete="off"
+        aria-autocomplete="none"
+      >
+        <Controller
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Student's Full Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Ahsan Shawon" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
           control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone no.</FormLabel>
-              <FormControl>
-                <Input placeholder="017*********" type="tel" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field
+              label="Student's Full Name"
+              required
+              validationState={fieldState.invalid ? "error" : "none"}
+              validationMessage={fieldState.error?.message}
+            >
+              <Input
+                placeholder="Ahsan Shawon"
+                {...field}
+                autoCorrect="off"
+                autoCapitalize="off"
+                autoComplete="off"
+                list="autocompleteOff"
+                aria-autocomplete="none"
+              />
+            </Field>
           )}
         />
-        <FormField
+        <Controller
+          name="phone"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field
+              label="Phone no."
+              required
+              validationState={fieldState.invalid ? "error" : "none"}
+              validationMessage={fieldState.error?.message}
+            >
+              <Input
+                placeholder="017*********"
+                type="tel"
+                {...field}
+                autoCorrect="off"
+                autoCapitalize="off"
+                autoComplete="off"
+                list="autocompleteOff"
+                aria-autocomplete="none"
+              />
+            </Field>
+          )}
+        />
+        <Controller
+          name="classId"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field
+              label="Class"
+              validationState={fieldState.invalid ? "error" : "none"}
+              validationMessage={fieldState.error?.message}
+            >
+              <Combobox
+                open
+                value={field.value}
+                onInput={field.onChange}
+                onOptionSelect={onOptionSelect}
+                placeholder="Create a class first"
+                mountNode={document.getElementById("blabla")}
+                clearable
+              >
+                {children}
+              </Combobox>
+            </Field>
+          )}
+        />
+        {/* <FormField
           control={form.control}
           name="classId"
           render={({ field }) => (
@@ -158,9 +227,9 @@ function CreateStudentPageInner() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <Button className="w-full mt-3">Create</Button>
       </form>
-    </Form>
+    </FormProvider>
   );
 }

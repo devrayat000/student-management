@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { mutate } from "swr";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router";
 // import useMutation from "swr/mutation";
 
 import {
@@ -51,7 +51,13 @@ export default function CreateClassPage() {
   return (
     <DetailsPageLayout title={`Create ${title}`}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(createClass)}>
+        <form
+          onSubmit={form.handleSubmit(createClass)}
+          autoCorrect="off"
+          autoCapitalize="off"
+          autoComplete="off"
+          aria-autocomplete="none"
+        >
           <FormField
             control={form.control}
             name="name"
@@ -59,7 +65,15 @@ export default function CreateClassPage() {
               <FormItem>
                 <FormLabel>{title} Name</FormLabel>
                 <FormControl>
-                  <Input placeholder={`${title} 1`} {...field} />
+                  <Input
+                    placeholder={`${title} 1`}
+                    {...field}
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    autoComplete="off"
+                    list="autocompleteOff"
+                    aria-autocomplete="none"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

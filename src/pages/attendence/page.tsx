@@ -1,6 +1,6 @@
 import { Suspense, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
-import { WebviewWindow } from "@tauri-apps/api/window";
+import { useSearchParams } from "react-router";
+import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 import useSWR from "swr";
 import {
   ColumnDef,
@@ -55,12 +55,11 @@ function AttendencePageInner() {
 
   useEffect(() => {
     const win = WebviewWindow.getByLabel("attendence_sheet");
-    if (!batchId) {
-      win?.close();
-    }
-
     function closeAfterPrint() {
       win?.close();
+    }
+    if (!batchId) {
+      closeAfterPrint();
     }
 
     window.addEventListener("afterprint", closeAfterPrint);

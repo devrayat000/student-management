@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import useSWR from "swr";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router";
+import { singular } from "pluralize";
+import capitalize from "capitalize";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -8,9 +10,8 @@ import { Label } from "~/components/ui/label";
 import DetailsPageLayout from "~/pages/DetailsPageLayout";
 import Spinner from "~/components/common/Spinner";
 import DeletePrompt from "~/components/common/DeletePrompt";
+import BatchStudents from "./BatchStudents";
 import { contentKeys, contents } from "../utils";
-import { singular } from "pluralize";
-import capitalize from "capitalize";
 
 export default function ContentDetailsPage() {
   const { content } = useParams();
@@ -21,8 +22,15 @@ export default function ContentDetailsPage() {
 
   return (
     <DetailsPageLayout title={`${capitalize(singular(content))} Details`}>
-      <Suspense fallback={<Spinner />}>
-        <ContentDetailsPageInner />
+      <Suspense>
+        <Suspense fallback={<Spinner />}>
+          <ContentDetailsPageInner />
+        </Suspense>
+        {content === "batches" && (
+          <Suspense fallback={<Spinner />}>
+            <BatchStudents />
+          </Suspense>
+        )}
       </Suspense>
     </DetailsPageLayout>
   );

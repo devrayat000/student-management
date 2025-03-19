@@ -1,27 +1,41 @@
-import { LuPlus } from "react-icons/lu";
-import { Link } from "react-router-dom";
-import { Button } from "~/components/ui/button";
+import { makeStyles, Title1, Button } from "@fluentui/react-components";
+import { Add16Filled, Add16Regular, bundleIcon } from "@fluentui/react-icons";
+import { Link } from "react-router";
 
 export interface ListLayoutProps {
   title: string;
   children: React.ReactNode;
 }
 
+// const FluentLink =
+
+const useStyles = makeStyles({
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "1rem",
+  },
+});
+
+const Add = bundleIcon(Add16Filled, Add16Regular);
+
 export default function ListLayout({ children, title }: ListLayoutProps) {
+  const classes = useStyles();
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-lg font-medium">{title}</h1>
-        <Button
-          asChild
-          className="px-4 py-1 bg-gray-800 text-white rounded-lg flex items-center gap-x-2 text-sm"
-          type="button"
+      <div className={classes.header}>
+        <Title1 weight="medium">{title}</Title1>
+        <Link
+          // as={Link}
+          to="create"
+          // className="px-4 py-1 bg-gray-800 text-white rounded-lg flex items-center gap-x-2 text-sm"
+          // icon={<Add />}
+          // iconPosition="after"
+          // appearance="primary"
         >
-          <Link to="create">
-            <span>Create</span>
-            <LuPlus className="w-4 h-4" />
-          </Link>
-        </Button>
+          Create
+        </Link>
       </div>
       {children}
     </div>

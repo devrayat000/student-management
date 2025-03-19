@@ -1,73 +1,45 @@
-import sql from "../lib/sql";
+import {
+  integer,
+  primaryKey,
+  sqliteTable,
+  text,
+} from "drizzle-orm/sqlite-core";
 
-export interface IStudent {
-  id: number;
-  name: string;
-  classId?: number;
-  batchId?: number;
-  phone: string;
-}
+export const students = sqliteTable("students", {
+  id: integer().primaryKey(),
+  name: text().notNull(),
+  classId: integer().references(() => classes.id, { onDelete: "cascade" }),
+  batchId: integer().references(() => batches.id, { onDelete: "cascade" }),
+  phone: text().notNull(),
+});
 
-export interface IStudentWithClassAndBatch
-  extends Omit<IStudent, "classId" | "batchId"> {
-  class: string;
-  batch: string;
-  paymentStatus: "paid" | "unpaid";
-}
+export const classes = sqliteTable("classes", {
+  id: integer().primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
+});
 
-export const students = sql`
-    CREATE TABLE IF NOT EXISTS students (
-        id INTEGER PRIMARY KEY,
-        name TEXT NOT NULL,
-        classId INTEGER,
-        batchId INTEGER,
-        phone TEXT NOT NULL,
-        
-        FOREIGN KEY (classId) REFERENCES classes(id) ON UPDATE CASCADE ON DELETE SET NULL,
-        FOREIGN KEY (batchId) REFERENCES batches(id) ON UPDATE CASCADE ON DELETE SET NULL
-    );
-`;
+export const batches = sqliteTable("batches", {
+  id: integer().primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
+});
 
-export interface IClass {
-  id: number;
-  name: string;
-}
-
-export const classes = sql`
-    CREATE TABLE IF NOT EXISTS classes (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL
-    );
-`;
-
-export interface IBatch {
-  id: number;
-  name: string;
-}
-
-export const batches = sql`
-    CREATE TABLE IF NOT EXISTS batches (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL
-    );
-`;
-
-export interface IPaymentHistory {
-  id: number;
-  month: number;
-  amount: number;
-  paymentDate: string;
-  paymentStatus: "paid" | "unpaid";
-}
-
-export const payments = sql`
-    CREATE TABLE IF NOT EXISTS payments (
-        id INTEGER PRIMARY KEY,
-        studentId INTEGER NOT NULL,
-        month INTEGER NOT NULL,
-        amount REAL NOT NULL,
-        paymentDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-
-        FOREIGN KEY (studentId) REFERENCES students(id) ON DELETE CASCADE
-    );
-`;
+export const payments = sqliteTable(
+  "payments",
+  {
+    studentId: integer()
+      .notNull()
+      .references(() => students.id, { onDelete: "cascade" }),
+    month: integer({ mode: "number" }).notNull(),
+    year: integer({ mode: "number" }).notNull(),
+    amount: integer().notNull(),
+    paymentDate: integer({ mode: "timestamp" })
+      .$defaultFn(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    primaryKey({
+      columns: [table.studentId, table.month, table.year],
+      name: "payment_pk",
+    }),
+  ]
+);

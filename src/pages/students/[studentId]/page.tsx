@@ -1,10 +1,8 @@
 import { Suspense } from "react";
 import useSWR from "swr";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
+import { Button, Input, Label } from "@fluentui/react-components";
 import DetailsPageLayout from "~/pages/DetailsPageLayout";
 import * as student from "~/database/actions/student";
 import Spinner from "~/components/common/Spinner";
@@ -54,24 +52,20 @@ function StudentDetailsPageInner() {
           <Input type="tel" disabled defaultValue={data?.phone} />
         </div>
         <div className="flex items-center gap-3">
-          <Button className="w-full mt-1" asChild>
+          {/* <Button className="w-full mt-1" asChild>
             <Link to="./edit">Update</Link>
-          </Button>
-          <Button className="w-full mt-1" asChild variant="destructive">
-            <DeletePrompt
-              element="student"
-              itemId={studentId}
-              onDelete={student.delete}
-            >
-              Delete
-            </DeletePrompt>
-          </Button>
+          </Button> */}
+          <DeletePrompt
+            id="student"
+            itemId={studentId}
+            onDelete={student.delete}
+          />
         </div>
       </div>
 
-      <div className="mt-3">
+      {/* <div className="mt-3">
         <PaymentHistory />
-      </div>
+      </div> */}
     </div>
   );
 }

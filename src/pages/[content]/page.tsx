@@ -1,5 +1,5 @@
 import { Suspense, useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router";
 import useSWR from "swr";
 import {
   ColumnDef,

@@ -1,27 +1,28 @@
 import bricks from "sql-bricks";
 
 import { db } from "~/lib/utils";
-import { IClass } from "../schema";
+import { classes } from "../schema";
+import { eq, InferInsertModel } from "drizzle-orm";
 
-async function create(data: Pick<IClass, "name">) {
-  const { text, values } = bricks
-    .insert("classes", { name: data.name })
-    .toParams();
-  return await db().execute(text, values);
+async function create(data: InferInsertModel<typeof classes>) {
+  return await db.insert(classes).values(data).returning();
 }
 
-async function update(data: IClass) {
-  const { text, values } = bricks
-    .update("classes", { name: data.name })
-    .where("id", data.id)
-    .toParams();
-  return await db().execute(text, values);
+interface UpdateClass extends InferInsertModel<typeof classes> {
+  id: number;
+}
+
+async function update({ id, ...data }: UpdateClass) {
+  return await db
+    .update(classes)
+    .set(data)
+    .where(eq(classes.id, id))
+    .returning();
 }
 
 async function del(id: string | number) {
   id = typeof id === "string" ? parseInt(id) : id;
-  const { text, values } = bricks.delete("classes").where("id", id).toParams();
-  return await db().execute(text, values);
+  return await db.delete(classes).where(eq(classes.id, id)).returning();
 }
 
 async function readOne(id?: number | string) {
@@ -38,10 +39,7 @@ async function readOne(id?: number | string) {
 }
 
 async function readAll() {
-  const { text, values } = bricks.select().from("classes").toParams();
-  const result = await db().select<IClass[]>(text, values);
-
-  return result;
+  return await db.select().from(classes);
 }
 
 async function deleteMany(ids: (string | number)[]) {

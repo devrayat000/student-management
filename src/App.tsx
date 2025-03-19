@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route, BrowserRouter } from "react-router";
 
 import { Toaster } from "./components/ui/toaster";
 
@@ -19,7 +19,7 @@ import AttendencePage from "./pages/attendence/page";
 function App() {
   return (
     <div>
-      <HashRouter future={{ v7_startTransition: true }}>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<RootLayout />}>
             <Route index element={<HomePage />} />
@@ -43,7 +43,7 @@ function App() {
           <Route path="/attendence" element={<AttendencePage />} />
           {/* <Route path="*" element={<h1>Not Found</h1>} /> */}
         </Routes>
-      </HashRouter>
+      </BrowserRouter>
       <Toaster />
     </div>
   );

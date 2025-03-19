@@ -1,16 +1,17 @@
 import { LuChevronRight, LuSettings } from "react-icons/lu";
 import * as Papa from "papaparse";
-import { save, open } from "@tauri-apps/api/dialog";
-import { readTextFile, writeTextFile } from "@tauri-apps/api/fs";
+import { save, open } from "@tauri-apps/plugin-dialog";
+import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { downloadDir } from "@tauri-apps/api/path";
 import useSWRMutation from "swr/mutation";
 
-import { Button } from "~/components/ui/button";
 import {
+  Button,
   Popover,
-  PopoverContent,
+  PopoverSurface,
   PopoverTrigger,
-} from "~/components/ui/popover";
+} from "@fluentui/react-components";
+import { Settings16Regular } from "@fluentui/react-icons";
 import { exportData, importData } from "~/database/actions";
 import { decrypt, encrypt, getStoredKey } from "~/database/encryption";
 
@@ -78,16 +79,14 @@ export default function Settings() {
   );
 
   return (
-    <Popover modal>
+    <Popover withArrow mountNode={document.getElementById("dialog-portal")}>
       <PopoverTrigger
-        type="button"
-        className="w-full flex items-center gap-x-2 hover:bg-gray-200 py-2 px-2 rounded-lg text-gray-500"
+        disableButtonEnhancement
+        // className="w-full flex items-center gap-x-2 hover:bg-gray-200 py-2 px-2 rounded-lg text-gray-500"
       >
-        <LuSettings className="w-4 h-4" />
-        <span className="text-sm font-medium flex-1 text-left">Settings</span>
-        <LuChevronRight className="w-4 h-4" />
+        <Button icon={<Settings16Regular />}>Settings</Button>
       </PopoverTrigger>
-      <PopoverContent side="right" align="end" className="w-min p-2">
+      <PopoverSurface side="right" align="end" className="w-min p-2">
         <div className="w-[200px] flex flex-col gap-1.5">
           <Button
             variant="ghost"
@@ -106,7 +105,7 @@ export default function Settings() {
             Import
           </Button>
         </div>
-      </PopoverContent>
+      </PopoverSurface>
     </Popover>
   );
 }

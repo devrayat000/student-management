@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { LuPlus } from "react-icons/lu";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { z } from "zod";
 
 import * as payment from "~/database/actions/payment";

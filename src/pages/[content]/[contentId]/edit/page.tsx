@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import useSWR, { mutate } from "swr";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -77,6 +77,10 @@ function EditContentPageInner() {
       <form
         className="flex flex-col gap-3"
         onSubmit={form.handleSubmit(updateContent)}
+        autoCorrect="off"
+        autoCapitalize="off"
+        autoComplete="off"
+        aria-autocomplete="none"
       >
         <div className="flex justify-end">
           <Input disabled name="id" defaultValue={data?.id} className="w-52" />
@@ -88,7 +92,14 @@ function EditContentPageInner() {
             <FormItem>
               <FormLabel>Content Name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  {...field}
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  autoComplete="off"
+                  list="autocompleteOff"
+                  aria-autocomplete="none"
+                />
               </FormControl>
             </FormItem>
           )}

@@ -1,8 +1,15 @@
 import * as student from "~/database/actions/student";
 import * as batch from "~/database/actions/batch";
 import { Suspense } from "react";
-import Spinner from "~/components/common/Spinner";
 import useSWR from "swr";
+import {
+  Card,
+  CardHeader,
+  makeStyles,
+  Spinner,
+  Text,
+  Title1,
+} from "@fluentui/react-components";
 
 async function getCount() {
   const [{ studentCount }, { batchCount }] = await Promise.all([
@@ -20,26 +27,43 @@ export default function HomePage() {
   );
 }
 
+const useStyles = makeStyles({
+  container: {},
+  title: {
+    fontWeight: 500,
+    marginBottom: "0.5rem",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+    gap: "1rem",
+    marginTop: "1rem",
+  },
+  card: {
+    width: "360px",
+    maxWidth: "100%",
+    height: "fit-content",
+  },
+  text: { margin: "0" },
+});
+
 function HomePageInner() {
   const { data } = useSWR(["count"], getCount, { suspense: true });
+  const classes = useStyles();
 
   return (
     <div>
-      <h2 className="text-xl mb-2 font-medium">Welcome back, Boss 🫡!</h2>
+      <Title1 className={classes.title}>Welcome back, Boss 🫡!</Title1>
       <p>Here is the overview of your account:</p>
-      <div className="p-4 grid grid-cols-2 gap-3 mt-3">
-        <div className="rounded-md border p-4">
-          <h4 className="text-center font-medium text-xl">Total Students</h4>
-          <p className="text-center text-4xl font-bold mt-1">
-            {data.studentCount}
-          </p>
-        </div>
-        <div className="rounded-md border p-4">
-          <h4 className="text-center font-medium text-xl">Total Batches</h4>
-          <p className="text-center text-4xl font-bold mt-1">
-            {data.batchCount}
-          </p>
-        </div>
+      <div className={classes.grid}>
+        <Card className={classes.card} appearance="outline">
+          <CardHeader header={<Text weight="bold">Total Students</Text>} />
+          <p className={classes.text}>{data.studentCount}</p>
+        </Card>
+        <Card className={classes.card} appearance="outline">
+          <CardHeader header={<Text weight="bold">Total Batches</Text>} />
+          <p className={classes.text}>{data.batchCount}</p>
+        </Card>
       </div>
     </div>
   );

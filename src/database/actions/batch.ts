@@ -1,7 +1,7 @@
 import bricks from "sql-bricks";
-
+import { count as dbCount } from "drizzle-orm";
 import { db } from "~/lib/utils";
-import { IBatch } from "../schema";
+import { batches, IBatch } from "../schema";
 
 async function create(data: Pick<IBatch, "name">) {
   const { text, values } = bricks
@@ -54,11 +54,9 @@ async function deleteMany(ids: (string | number)[]) {
 }
 
 async function count() {
-  const { text, values } = bricks
-    .select(["COUNT(*) AS batchCount"])
-    .from("batches")
-    .toParams();
-  const result = await db().select<{ batchCount: number }[]>(text, values);
+  const result = await db
+    .select({ batchCount: dbCount(batches.id) })
+    .from(batches);
   return result[0];
 }
 
