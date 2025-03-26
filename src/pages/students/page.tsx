@@ -27,6 +27,7 @@ import {
   Body1,
   tokens,
   SearchBox,
+  Spinner,
 } from "@fluentui/react-components";
 import {
   ArrowLeft12Regular,
@@ -46,7 +47,6 @@ import {
   Eye16Regular,
 } from "@fluentui/react-icons";
 import * as student from "~/database/actions/student";
-import Spinner from "~/components/common/Spinner";
 import { ask } from "@tauri-apps/plugin-dialog";
 import { useNavigate } from "react-router";
 

@@ -111,9 +111,9 @@ export default function RootLayout() {
             <NavItem icon={<Group />} value="/batches">
               Batches
             </NavItem>
-            {/* <NavItem icon={<Settings />} value="/settings">
+            <NavItem icon={<Settings />} value="/settings">
               Settings
-            </NavItem> */}
+            </NavItem>
           </NavDrawerBody>
         </NavDrawer>
         <main className={classes.content}>

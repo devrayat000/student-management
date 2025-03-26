@@ -1,17 +1,10 @@
-import { LuChevronRight, LuSettings } from "react-icons/lu";
 import * as Papa from "papaparse";
 import { save, open } from "@tauri-apps/plugin-dialog";
 import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { downloadDir } from "@tauri-apps/api/path";
 import useSWRMutation from "swr/mutation";
 
-import {
-  Button,
-  Popover,
-  PopoverSurface,
-  PopoverTrigger,
-} from "@fluentui/react-components";
-import { Settings16Regular } from "@fluentui/react-icons";
+import { Button } from "@fluentui/react-components";
 import { exportData, importData } from "~/database/actions";
 import { decrypt, encrypt, getStoredKey } from "~/database/encryption";
 
@@ -26,7 +19,7 @@ async function importCSV() {
   const encryptedText = await readTextFile(filePath);
   const file = await decrypt(encryptedText, await getStoredKey());
   const parsedData = await parseCSV(file);
-  await importData(parsedData);
+  await importData(parsedData as any);
 }
 
 async function parseCSV(csvData: string) {
@@ -64,11 +57,11 @@ async function exportCSV() {
     .join("\n\n");
 
   const encrypted = await encrypt(csvContent, await getStoredKey());
-
+  console.log("Savin file...");
   await writeTextFile(fpath, encrypted);
 }
 
-export default function Settings() {
+export default function SettingsPage() {
   const { trigger: exportToBackup, isMutating: isExporting } = useSWRMutation(
     ["export"],
     exportCSV
@@ -79,33 +72,23 @@ export default function Settings() {
   );
 
   return (
-    <Popover withArrow mountNode={document.getElementById("dialog-portal")}>
-      <PopoverTrigger
-        disableButtonEnhancement
-        // className="w-full flex items-center gap-x-2 hover:bg-gray-200 py-2 px-2 rounded-lg text-gray-500"
+    <div className="w-[200px] flex flex-col gap-1.5">
+      <Button
+        appearence="subtle"
+        className="w-full"
+        onClick={() => exportToBackup()}
+        disabled={isExporting || isImporting}
       >
-        <Button icon={<Settings16Regular />}>Settings</Button>
-      </PopoverTrigger>
-      <PopoverSurface side="right" align="end" className="w-min p-2">
-        <div className="w-[200px] flex flex-col gap-1.5">
-          <Button
-            variant="ghost"
-            className="w-full"
-            onClick={() => exportToBackup()}
-            disabled={isExporting || isImporting}
-          >
-            Export
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full"
-            onClick={() => importFromBackup()}
-            disabled={isImporting || isExporting}
-          >
-            Import
-          </Button>
-        </div>
-      </PopoverSurface>
-    </Popover>
+        Export
+      </Button>
+      <Button
+        appearence="subtle"
+        className="w-full"
+        onClick={() => importFromBackup()}
+        disabled={isImporting || isExporting}
+      >
+        Import
+      </Button>
+    </div>
   );
 }

@@ -1,5 +1,3 @@
-import bricks from "sql-bricks";
-
 import { db } from "~/lib/utils";
 import { payments } from "../schema";
 import { eq, InferInsertModel } from "drizzle-orm";

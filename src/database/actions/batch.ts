@@ -1,40 +1,36 @@
-import bricks from "sql-bricks";
-import { count as dbCount } from "drizzle-orm";
+import { count as dbCount, eq, inArray, InferInsertModel } from "drizzle-orm";
 import { db } from "~/lib/utils";
-import { batches, IBatch } from "../schema";
+import { batches } from "../schema";
 
-async function create(data: Pick<IBatch, "name">) {
-  const { text, values } = bricks
-    .insert("batches", { name: data.name })
-    .toParams();
-  return await db().execute(text, values);
+async function create(data: InferInsertModel<typeof batches>) {
+  return await db.insert(batches).values(data).returning();
 }
 
-async function update(data: IBatch) {
-  const { text, values } = bricks
-    .update("batches", { name: data.name })
-    .where("id", data.id)
-    .toParams();
-  return await db().execute(text, values);
+interface UpdateClass extends InferInsertModel<typeof batches> {
+  id: number;
+}
+
+async function update({ id, ...data }: UpdateClass) {
+  return await db
+    .update(batches)
+    .set(data)
+    .where(eq(batches.id, id))
+    .returning();
 }
 
 async function del(id: string | number) {
   id = typeof id === "string" ? parseInt(id) : id;
-  const { text, values } = bricks.delete("batches").where("id", id).toParams();
-  return await db().execute(text, values);
+  return await db.delete(batches).where(eq(batches.id, id)).returning();
 }
 
 async function readOne(id?: number | string) {
   if (!id) return null;
   id = typeof id === "string" ? parseInt(id) : id;
 
-  const { text, values } = bricks
-    .select()
-    .from("batches")
-    .where("id", id)
-    .toParams();
-  const result = await db().select<IBatch[]>(text, values);
-  return result.length ? result[0] : null;
+  const result = await db.query.batches.findFirst({
+    where: (table, { eq }) => eq(table.id, id),
+  });
+  return result;
 }
 
 async function readAll() {
@@ -42,12 +38,13 @@ async function readAll() {
 }
 
 async function deleteMany(ids: (string | number)[]) {
-  ids = ids.map((id) => (typeof id === "string" ? parseInt(id) : id));
-  const { text, values } = bricks
-    .delete("batches")
-    .where(bricks.in("id", ids))
-    .toParams();
-  return await db().execute(text, values);
+  const mappedIds = ids.map((id) =>
+    typeof id === "string" ? parseInt(id) : id
+  );
+  return await db
+    .delete(batches)
+    .where(inArray(batches.id, mappedIds))
+    .returning();
 }
 
 async function count() {

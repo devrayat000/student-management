@@ -1,8 +1,6 @@
-import bricks from "sql-bricks";
-
 import { db } from "~/lib/utils";
 import { classes } from "../schema";
-import { eq, InferInsertModel } from "drizzle-orm";
+import { eq, inArray, InferInsertModel } from "drizzle-orm";
 
 async function create(data: InferInsertModel<typeof classes>) {
   return await db.insert(classes).values(data).returning();
@@ -29,13 +27,10 @@ async function readOne(id?: number | string) {
   if (!id) return null;
   id = typeof id === "string" ? parseInt(id) : id;
 
-  const { text, values } = bricks
-    .select()
-    .from("classes")
-    .where("id", id)
-    .toParams();
-  const result = await db().select<IClass[]>(text, values);
-  return result.length ? result[0] : null;
+  const result = await db.query.classes.findFirst({
+    where: (table, { eq }) => eq(table.id, id),
+  });
+  return result;
 }
 
 async function readAll() {
@@ -43,12 +38,13 @@ async function readAll() {
 }
 
 async function deleteMany(ids: (string | number)[]) {
-  ids = ids.map((id) => (typeof id === "string" ? parseInt(id) : id));
-  const { text, values } = bricks
-    .delete("classes")
-    .where(bricks.in("id", ids))
-    .toParams();
-  return await db().execute(text, values);
+  const mappedIds = ids.map((id) =>
+    typeof id === "string" ? parseInt(id) : id
+  );
+  return await db
+    .delete(classes)
+    .where(inArray(classes.id, mappedIds))
+    .returning();
 }
 
 export { del as delete, create, update, readOne, readAll, deleteMany };

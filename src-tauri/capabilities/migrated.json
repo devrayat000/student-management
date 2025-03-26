@@ -2,13 +2,11 @@
   "identifier": "migrated",
   "description": "permissions that were migrated from v1",
   "local": true,
-  "windows": [
-    "main"
-  ],
+  "windows": ["main"],
   "permissions": [
     "core:default",
     "fs:allow-read-file",
-    "fs:allow-write-file",
+    "fs:allow-write-text-file",
     "core:window:allow-create",
     "core:window:allow-close",
     "dialog:allow-open",

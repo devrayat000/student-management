@@ -15,6 +15,7 @@ import CreateContentPage from "./pages/[content]/create/page";
 import ContentDetailsPage from "./pages/[content]/[contentId]/page";
 import EditContentPage from "./pages/[content]/[contentId]/edit/page";
 import AttendencePage from "./pages/attendence/page";
+import SettingsPage from "./pages/Settings";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
                 <Route path="edit" element={<EditContentPage />} />
               </Route>
             </Route>
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
           <Route path="/attendence" element={<AttendencePage />} />
           {/* <Route path="*" element={<h1>Not Found</h1>} /> */}
